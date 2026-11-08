@@ -54,7 +54,7 @@
     list.innerHTML = ""; $("mScore").textContent = "0"; $("mTotal").textContent = "0"; $("mFound").textContent = "0";
     $("mTime").textContent = "0:30"; $("mBar").style.width = "100%"; $("mTimeWrap").classList.remove("low");
     setWord(""); $("mRead").textContent = ""; $("mLive").textContent = "Waiting for a board";
-    cursor.style.left = "78%"; cursor.style.top = "70%";
+    cursor.style.left = "72%"; cursor.style.top = "62%";
     await sleep(900);
     $("mLive").textContent = "Reading board";
     for (let i = 1; i <= 16; i++) { $("mRead").textContent = L.slice(0, i); await sleep(40); }
@@ -86,7 +86,7 @@
     }
     clearInterval(clock);
     setWord(""); $("mLive").textContent = "Round done · waiting";
-    cursor.style.left = "78%"; cursor.style.top = "70%";
+    cursor.style.left = "72%"; cursor.style.top = "62%";
     await sleep(2800);
   }
   (async () => { await sleep(500); for (;;) { await waitVisible(); await round(); } })();
