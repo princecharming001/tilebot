@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Comic+Neue:wght@700&family=Space+Mono&family=Anton&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body class="calm">
 
@@ -67,8 +67,29 @@
 
 <section class="demo">
   <h2 data-calm="Watch it play" data-chaos="Wacth it plya">Watch it play</h2>
-  <p class="demo-sub" data-calm="It sees the board, picks the best words and swipes them for you." data-chaos="Or just squint and hope.">It sees the board, picks the best words and swipes them for you.</p>
-  <div class="demo-frame"><video src="img/demo.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Tilebot playing a round"></video></div>
+  <p class="demo-sub" data-calm="A live look at a round: it reads the sixteen tiles, ranks every word and swipes the best ones before the clock runs out." data-chaos="Or just squint and hope.">A live look at a round: it reads the sixteen tiles, ranks every word and swipes the best ones before the clock runs out.</p>
+  <div class="mock" id="mock" aria-label="Animated mockup of Tilebot playing a round">
+    <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="mb-right"><span class="mb-tb"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1.6"/><rect x="13" y="2" width="9" height="9" rx="1.6" opacity=".35"/><rect x="2" y="13" width="9" height="9" rx="1.6" opacity=".35"/><rect x="13" y="13" width="9" height="9" rx="1.6"/></svg><span id="mbState">Watching</span></span><span>9:41</span></span></div>
+    <div class="mock-body">
+      <div class="phone-win">
+        <div class="pw-title">iPhone Mirroring</div>
+        <div class="phone">
+          <div class="ph-notch"></div>
+          <div class="ph-top"><div><small>Score</small><b id="mScore">0</b></div><div class="ph-timer"><small>Time</small><b id="mTime">0:30</b></div></div>
+          <div class="ph-word" id="mWord">&nbsp;</div>
+          <div class="ph-board" id="mBoard"><svg class="ph-path"><polyline id="mLine" points=""/></svg><span class="finger" id="mFinger"></span></div>
+          <div class="ph-foot">Word Link</div>
+        </div>
+      </div>
+      <div class="tb-panel">
+        <div class="tp-head"><span class="tp-logo"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1.6"/><rect x="13" y="2" width="9" height="9" rx="1.6" opacity=".35"/><rect x="2" y="13" width="9" height="9" rx="1.6" opacity=".35"/><rect x="13" y="13" width="9" height="9" rx="1.6"/></svg>Tilebot</span><span class="live"><i></i><span id="mLive">Reading board</span></span></div>
+        <div class="tp-read"><small>Board read</small><span id="mRead"></span></div>
+        <div class="tp-list-h"><span>Played</span><span>Points</span></div>
+        <ol class="tp-list" id="mList"></ol>
+        <div class="tp-total"><span>Round total</span><b id="mTotal">0</b></div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="steps" id="setup">
@@ -85,6 +106,6 @@
   <span data-calm="Free. Not affiliated with Triumph, the game's publisher or Apple. Bots in cash or ranked rounds break Triumph's rules." data-chaos="Free?? Not afiliated with antyhing.">Free. Not affiliated with Triumph, the game's publisher or Apple. Bots in cash or ranked rounds break Triumph's rules.</span>
 </footer>
 
-<script src="site.js" defer></script>
+<script src="site.js?v=6" defer></script>
 </body>
 </html>
