@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Comic+Neue:wght@700&family=Space+Mono&family=Anton&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body class="calm">
 
@@ -68,25 +68,39 @@
 <section class="demo">
   <h2 data-calm="Watch it play" data-chaos="Wacth it plya">Watch it play</h2>
   <p class="demo-sub" data-calm="A live look at a round: it reads the sixteen tiles, ranks every word and swipes the best ones before the clock runs out." data-chaos="Or just squint and hope.">A live look at a round: it reads the sixteen tiles, ranks every word and swipes the best ones before the clock runs out.</p>
-  <div class="mock" id="mock" aria-label="Animated mockup of Tilebot playing a round">
-    <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="mb-right"><span class="mb-tb"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1.6"/><rect x="13" y="2" width="9" height="9" rx="1.6" opacity=".35"/><rect x="2" y="13" width="9" height="9" rx="1.6" opacity=".35"/><rect x="13" y="13" width="9" height="9" rx="1.6"/></svg><span id="mbState">Watching</span></span><span>9:41</span></span></div>
-    <div class="mock-body">
-      <div class="phone-win">
-        <div class="pw-title">iPhone Mirroring</div>
-        <div class="phone">
-          <div class="ph-notch"></div>
-          <div class="ph-top"><div><small>Score</small><b id="mScore">0</b></div><div class="ph-timer"><small>Time</small><b id="mTime">0:30</b></div></div>
-          <div class="ph-word" id="mWord">&nbsp;</div>
-          <div class="ph-board" id="mBoard"><svg class="ph-path"><polyline id="mLine" points=""/></svg><span class="finger" id="mFinger"></span></div>
-          <div class="ph-foot">Word Link</div>
+  <div class="mock" id="mock" aria-label="Animated mockup of Tilebot playing a round on a Mac">
+    <div class="mbar">
+      <div class="mb-l"><b>Finder</b><span>File</span><span>Edit</span><span>View</span><span>Window</span></div>
+      <div class="mb-r">
+        <span class="mb-tb on"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1.6"/><rect x="13" y="2" width="9" height="9" rx="1.6" opacity=".35"/><rect x="2" y="13" width="9" height="9" rx="1.6" opacity=".35"/><rect x="13" y="13" width="9" height="9" rx="1.6"/></svg></span>
+        <svg class="mb-ico" viewBox="0 0 24 24"><path d="M2 8.5a15 15 0 0120 0M5 12a10 10 0 0114 0M8.5 15.5a5 5 0 017 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19" r="1.6"/></svg>
+        <svg class="mb-ico bat" viewBox="0 0 30 14"><rect x="1" y="1" width="25" height="12" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.4"/><rect x="3" y="3" width="17" height="8" rx="2"/><rect x="27" y="4.5" width="2" height="5" rx="1"/></svg>
+        <span id="mClock">Sat 9:41 PM</span>
+      </div>
+    </div>
+    <div class="desk">
+      <div class="mirror">
+        <div class="iph">
+          <div class="island"></div>
+          <div class="g-top">
+            <div class="g-score"><small>SCORE</small><b id="mScore">0</b></div>
+            <div class="g-round">Round 2 of 3</div>
+            <div class="g-time"><small>TIME</small><b id="mTime">0:30</b></div>
+          </div>
+          <div class="g-bar"><i id="mBar"></i></div>
+          <div class="g-word" id="mWord">&nbsp;</div>
+          <div class="g-board" id="mBoard"><svg class="g-path"><defs><linearGradient id="gp" x1="0" x2="1"><stop offset="0" stop-color="#ffb24d"/><stop offset="1" stop-color="#ff7a3d"/></linearGradient></defs><polyline id="mLine" points=""/></svg><div class="pop" id="mPop"></div></div>
+          <div class="g-foot"><span>Word Link</span></div>
         </div>
       </div>
-      <div class="tb-panel">
-        <div class="tp-head"><span class="tp-logo"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1.6"/><rect x="13" y="2" width="9" height="9" rx="1.6" opacity=".35"/><rect x="2" y="13" width="9" height="9" rx="1.6" opacity=".35"/><rect x="13" y="13" width="9" height="9" rx="1.6"/></svg>Tilebot</span><span class="live"><i></i><span id="mLive">Reading board</span></span></div>
-        <div class="tp-read"><small>Board read</small><span id="mRead"></span></div>
-        <div class="tp-list-h"><span>Played</span><span>Points</span></div>
+      <svg class="cursor" id="mFinger" viewBox="0 0 24 24"><path d="M4 2l15 10.5-6.6 1.2 3.9 7.6-2.9 1.4-3.8-7.7L4.8 19z" fill="#111" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      <div class="pop-over">
+        <div class="po-head"><span class="tp-logo"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="1.6"/><rect x="13" y="2" width="9" height="9" rx="1.6" opacity=".35"/><rect x="2" y="13" width="9" height="9" rx="1.6" opacity=".35"/><rect x="13" y="13" width="9" height="9" rx="1.6"/></svg>Tilebot</span><span class="live"><i></i><span id="mLive">Reading board</span></span></div>
+        <div class="po-row"><small>Board</small><span id="mRead"></span></div>
+        <div class="po-row"><small>Words found</small><span id="mFound">0</span></div>
         <ol class="tp-list" id="mList"></ol>
-        <div class="tp-total"><span>Round total</span><b id="mTotal">0</b></div>
+        <div class="po-total"><span>Round total</span><b id="mTotal">0</b></div>
+        <div class="po-btns"><span id="mbState">Pause</span><span>Settings…</span></div>
       </div>
     </div>
   </div>
@@ -106,6 +120,6 @@
   <span data-calm="Free. Not affiliated with Triumph, the game's publisher or Apple. Bots in cash or ranked rounds break Triumph's rules." data-chaos="Free?? Not afiliated with antyhing.">Free. Not affiliated with Triumph, the game's publisher or Apple. Bots in cash or ranked rounds break Triumph's rules.</span>
 </footer>
 
-<script src="site.js?v=6" defer></script>
+<script src="site.js?v=7" defer></script>
 </body>
 </html>
