@@ -155,3 +155,40 @@ body.chaos h1 { font-size: clamp(38px, 4.5vw, 70px); }
   .statue { inset: 110px 0 6% 0; height: auto; }
   .cloud { bottom: 6%; }
 }
+
+/* triumph mark (generic badge, not their logo) */
+.tri { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 5px; background: #0a0a0a; color: #fff; font: 700 12px/1 var(--sans); }
+body.chaos .tri { background: var(--cream); color: var(--chaos); }
+.req { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: #c9c2c2; color: #3a3a3e; }
+.req:hover { color: var(--ink); }
+html { scroll-behavior: smooth; }
+
+/* statue framing: bubble sits above the head, like a caption */
+.art { height: min(80vh, 880px); }
+.bubble { top: 0; }
+.statue { inset: auto 0 6% 0; top: 11%; height: 83%; width: 100%; }
+.cloud { bottom: 2%; height: 26%; width: 92%; }
+.cloud i { filter: blur(10px); }
+
+/* steps */
+.steps { width: 100%; max-width: 1800px; margin: 0 auto; padding: 40px clamp(16px, 11.6vw, 232px) 72px; }
+.steps h2 { margin: 0 0 28px; font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 3.4vw, 48px); letter-spacing: -0.02em; }
+.steps ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.steps li { background: #fff; border-radius: 8px; padding: 22px 20px 24px; box-shadow: 0 1px 0 rgba(0,0,0,.03), 0 18px 40px -28px rgba(60,40,40,.35); transition: background-color .4s, color .4s; }
+.steps .n { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 13px; }
+.steps b { display: block; margin-top: 16px; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+.steps p { margin: 8px 0 0; font-size: 14px; line-height: 1.45; color: var(--muted); }
+body.chaos .steps h2 { font-family: "Comic Neue", cursive; font-weight: 700; transform: rotate(-1deg); }
+body.chaos .steps li { background: var(--chaos-2); color: #fff; font-family: "Space Mono", monospace; }
+body.chaos .steps li:nth-child(odd) { transform: rotate(-1.5deg); }
+body.chaos .steps li:nth-child(even) { transform: rotate(1.2deg); }
+body.chaos .steps p { color: #d6e3fb; }
+body.chaos .steps .n { background: var(--red); }
+@media (max-width: 900px) {
+  .steps ol { grid-template-columns: 1fr 1fr; }
+  .statue { top: 120px; height: auto; bottom: 6%; }
+}
+@media (max-width: 520px) { .steps ol { grid-template-columns: 1fr; } }
+.cloud { bottom: 14%; height: 22%; }
+.sub { max-width: 420px; }
+@media (max-width: 900px) { .cloud { bottom: 6%; } }
