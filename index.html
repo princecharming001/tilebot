@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tilebot</title>
+<meta name="description" content="Word Link, solved. Share your mirrored iPhone or drop a screenshot and get the best words instantly - free, in your browser. Or let the Mac app play for you.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23141414'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.5'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.5'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%231c5bff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Tilebot home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"/><rect x="7" y="7" width="8" height="8" rx="2" fill="var(--bg)"/><rect x="17" y="7" width="8" height="8" rx="2" fill="var(--bg)" opacity=".5"/><rect x="7" y="17" width="8" height="8" rx="2" fill="var(--bg)" opacity=".5"/><rect x="17" y="17" width="8" height="8" rx="2" fill="var(--accent)"/></svg>
+      Tilebot
+    </a>
+    <ul>
+      <li><a href="#solver">Solver</a></li>
+      <li><a href="#mac">Mac app</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Word Link, solved.</h1>
+    <p class="lead">Share your mirrored iPhone, or drop a screenshot of the board, and get the best words instantly. Free, nothing to install, nothing leaves your browser.</p>
+    <div class="cta">
+      <a class="btn primary" href="#solver">Open the solver</a>
+      <a class="btn" href="#mac">Let the Mac app play for you ↓</a>
+    </div>
+  </div>
+</section>
+
+<section id="solver">
+  <div class="wrap">
+    <h2>Solver</h2>
+    <p class="muted" style="margin-top:8px">Pick how to get the board in. Live sharing updates as the tiles change.</p>
+
+    <div class="solver">
+      <div>
+        <div class="seg" role="tablist" aria-label="Input mode">
+          <button role="tab" aria-selected="true" data-mode="live">Share screen</button>
+          <button role="tab" aria-selected="false" data-mode="shot">Screenshot</button>
+          <button role="tab" aria-selected="false" data-mode="type">Type letters</button>
+        </div>
+
+        <div class="panel" style="margin-top:14px">
+          <div class="mode active" data-mode="live">
+            <p class="small muted">Open iPhone Mirroring with the game on screen, then share that window. Works in Chrome, Edge, Safari 17+ and Arc on a Mac.</p>
+            <div class="cta" style="margin-top:14px">
+              <button class="btn accent" id="shareBtn">Share the mirrored window</button>
+              <button class="btn" id="stopBtn" hidden>Stop</button>
+            </div>
+            <video id="video" playsinline muted></video>
+            <canvas id="preview" class="preview"></canvas>
+          </div>
+
+          <div class="mode" data-mode="shot">
+            <label class="drop" id="drop">
+              <input type="file" id="file" accept="image/*">
+              Drop a screenshot of the board here, click to choose one, or paste with ⌘V
+            </label>
+            <canvas id="shotPreview" class="preview"></canvas>
+          </div>
+
+          <div class="mode" data-mode="type">
+            <p class="small muted">Sixteen letters, left to right, top row first.</p>
+            <input class="letters" id="lettersInput" maxlength="16" spellcheck="false" autocomplete="off" placeholder="YOTEURSANVTEOOUS" style="margin-top:10px">
+          </div>
+
+          <div class="status" id="status"><span class="dot" id="dot"></span><span id="statusText">Loading word list…</span></div>
+        </div>
+
+        <div class="grid" id="grid" aria-label="Board"></div>
+        <p class="note">Tap a tile to correct a letter. Dashed tiles are ones it was unsure about.</p>
+      </div>
+
+      <div class="words panel">
+        <div class="words-head">
+          <h3 id="wordsTitle">Best words</h3>
+          <label class="toggle"><input type="checkbox" id="rare"> show rare words</label>
+        </div>
+        <p class="small muted" style="margin-top:6px">Sorted by points (tile values × a length multiplier). Click one to see the swipe path.</p>
+        <ol id="wordList"><li class="empty" style="border:0;background:transparent;cursor:default">No board yet.</li></ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="card">
+        <div class="k">1 · See</div>
+        <h3>Finds the 4×4 grid</h3>
+        <p>Looks for the sixteen light tiles in whatever you give it, whether that is a shared window or a screenshot, and reads each letter against a library of tile shapes.</p>
+      </div>
+      <div class="card">
+        <div class="k">2 · Think</div>
+        <h3>Scores every word</h3>
+        <p>Walks the board for every connected word in an everyday-English dictionary, then ranks by the game's own scoring: tile values times a length bonus.</p>
+      </div>
+      <div class="card">
+        <div class="k">3 · Play</div>
+        <h3>You swipe, or the Mac app does</h3>
+        <p>In the browser you swipe the words yourself. The Mac app goes one step further and swipes them on the mirrored phone, with a human-looking hand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mac">
+  <div class="wrap">
+    <h2>Autoplay for Mac</h2>
+    <p class="muted" style="margin-top:8px;max-width:640px">A small menu-bar app. It waits until a fresh board appears in iPhone Mirroring, plays that round to the clock, then goes back to waiting. It never touches a round you started yourself.</p>
+    <div class="req">
+      <span class="pill">macOS 15 or newer</span>
+      <span class="pill">Apple silicon</span>
+      <span class="pill">iPhone on iOS 18+</span>
+      <span class="pill">iPhone Mirroring set up</span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" id="dl" href="https://github.com/princecharming001/tilebot/releases/latest/download/Tilebot.zip">Download Tilebot.zip</a>
+      <a class="btn" href="https://github.com/princecharming001/tilebot/releases/latest" rel="noopener">All releases</a>
+    </div>
+
+    <h3 style="margin-top:40px">Setup, in order</h3>
+    <ol class="check">
+      <li><span class="num">1</span><div><b>Unzip and move Tilebot to Applications, then open it.</b><p>It is signed and notarized by Apple, so it opens like any other app. It lives in the menu bar (look for the grid icon at the top right), not the Dock.</p></div></li>
+      <li><span class="num">2</span><div><b>Allow Screen Recording.</b><p>System Settings → Privacy &amp; Security → Screen Recording → turn on Tilebot. Without it the app sees a black screen. The app's Setup window has a button that opens this exact pane and shows a green check when it is granted.</p></div></li>
+      <li><span class="num">3</span><div><b>Allow Accessibility.</b><p>System Settings → Privacy &amp; Security → Accessibility → turn on Tilebot. This is what lets it swipe. Without it the swipes silently do nothing, which is why the app checks and tells you.</p></div></li>
+      <li><span class="num">4</span><div><b>Start iPhone Mirroring and open the game.</b><p>Phone locked, nearby, Bluetooth and Wi-Fi on, same Apple ID on both. The mirroring window needs to stay visible and in front while a round plays: macOS only passes input to it when it is the active window.</p></div></li>
+      <li><span class="num">5</span><div><b>Click Check my setup, then Watch.</b><p>Check my setup grabs the screen and shows the sixteen letters it reads, so you know every permission works before it ever swipes. Watch arms it. Start a round on the phone, lock it, and walk away.</p></div></li>
+    </ol>
+    <p class="note">Not available where iPhone Mirroring is not offered (EU and China accounts). The app does nothing unless a board is on screen; Pause in the menu bar stops it at any moment.</p>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>FAQ</h2>
+    <div style="margin-top:22px">
+      <details><summary>Does anything leave my computer?</summary><p>No. The solver runs entirely in your browser: the word list and tile shapes are downloaded once, frames from your screen are processed locally and never uploaded. The Mac app has no server at all.</p></details>
+      <details><summary>Does the solver work on Windows or Linux?</summary><p>Yes, with a screenshot or typed letters, and with screen sharing in Chrome or Edge. The autoplay app is Mac only because it relies on iPhone Mirroring.</p></details>
+      <details><summary>It read a letter wrong.</summary><p>Tap the tile and type the right letter; the list updates. The shape library covers the letters the game uses most; rarer ones (J, Q, Z) may come up as unsure until they have been seen.</p></details>
+      <details><summary>Why did the game reject a word the solver suggested?</summary><p>The game's dictionary is a little narrower than ours. Words marked rare are the likeliest to be refused; leave "show rare words" off when it matters.</p></details>
+      <details><summary>Can I use this in a cash or ranked round?</summary><p>Technically it does not know the difference. Whether you should is between you and the game's terms of service; a bot in a competitive mode is the kind of thing that gets accounts banned.</p></details>
+      <details><summary>Why does the Mac app need the mirroring window in front?</summary><p>iPhone Mirroring only accepts input when it is the active window, and it ignores input sent any other way. That is Apple's design, so while a round plays the Mac is busy. Start a round and step away.</p></details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <span>Tilebot · free</span>
+  <span>Not affiliated with the game's publisher or with Apple.</span>
+</footer>
+
+<script src="solver.js" defer></script>
+</body>
+</html>
