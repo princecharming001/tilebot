@@ -36,7 +36,7 @@
   ].filter(([w, p]) => p.every((i, k) => k === 0 || adj(p[k - 1], i)));
   function adj(a, b) { const dr = Math.abs((a >> 2) - (b >> 2)), dc = Math.abs((a & 3) - (b & 3)); return a !== b && dr <= 1 && dc <= 1; }
   const pts = (w) => [...w].reduce((s, c) => s + (VAL[c] || 1), 0) * (MULT[w.length] || 85);
-  const tiles = [...L].map((ch) => { const t = document.createElement("span"); t.className = "t"; t.innerHTML = ch + "<sub>" + (VAL[ch] || 1) + "</sub>"; board.appendChild(t); return t; });
+  const tiles = [...L].map((ch) => { const t = document.createElement("span"); t.className = "t"; t.innerHTML = ch + '<sub data-d="' + "•".repeat(VAL[ch] || 1) + '"></sub>'; board.appendChild(t); return t; });
   const $ = (id) => document.getElementById(id);
   const desk = document.querySelector(".desk"), cursor = $("mFinger"), line = $("mLine"), word = $("mWord"), list = $("mList"), pop = $("mPop");
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -52,14 +52,14 @@
   async function round() {
     let score = 0, found = 0, time = 30;
     list.innerHTML = ""; $("mScore").textContent = "0"; $("mTotal").textContent = "0"; $("mFound").textContent = "0";
-    $("mTime").textContent = "0:30"; $("mBar").style.width = "100%"; $("mTime").parentElement.classList.remove("low");
+    $("mTime").textContent = "0:30"; $("mBar").style.width = "100%"; $("mTimeWrap").classList.remove("low");
     setWord(""); $("mRead").textContent = ""; $("mLive").textContent = "Waiting for a board";
     cursor.style.left = "78%"; cursor.style.top = "70%";
     await sleep(900);
     $("mLive").textContent = "Reading board";
     for (let i = 1; i <= 16; i++) { $("mRead").textContent = L.slice(0, i); await sleep(40); }
     $("mLive").textContent = "Playing";
-    const clock = setInterval(() => { if (!visible) return; time = Math.max(0, time - 1); $("mTime").textContent = "0:" + String(time).padStart(2, "0"); $("mBar").style.width = (time / 30 * 100) + "%"; if (time <= 8) $("mTime").parentElement.classList.add("low"); }, 380);
+    const clock = setInterval(() => { if (!visible) return; time = Math.max(0, time - 1); $("mTime").textContent = "0:" + String(time).padStart(2, "0"); $("mBar").style.width = (time / 30 * 100) + "%"; if (time <= 8) $("mTimeWrap").classList.add("low"); }, 380);
     for (const [w, path] of WORDS) {
       await waitVisible();
       moveCursor(inDesk(path[0])); await sleep(jitter(260));

@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Comic+Neue:wght@700&family=Space+Mono&family=Anton&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=7">
+<link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body class="calm">
 
@@ -79,18 +79,15 @@
       </div>
     </div>
     <div class="desk">
-      <div class="mirror">
+      <div class="mirror"><div class="mirror-chrome"><span class="dots"><i></i><i></i><i></i></span></div>
         <div class="iph">
-          <div class="island"></div>
-          <div class="g-top">
-            <div class="g-score"><small>SCORE</small><b id="mScore">0</b></div>
-            <div class="g-round">Round 2 of 3</div>
-            <div class="g-time"><small>TIME</small><b id="mTime">0:30</b></div>
-          </div>
-          <div class="g-bar"><i id="mBar"></i></div>
+          <div class="ios-status"><span>9:41</span><span class="ios-ic"><i></i><i></i><i></i><b></b></span></div>
+          <div class="g-time" id="mTimeWrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13V9M10 3h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><b id="mTime">0:30</b></div>
+          <div class="g-score"><b id="mScore">0</b></div>
           <div class="g-word" id="mWord">&nbsp;</div>
-          <div class="g-board" id="mBoard"><svg class="g-path"><defs><linearGradient id="gp" x1="0" x2="1"><stop offset="0" stop-color="#ffb24d"/><stop offset="1" stop-color="#ff7a3d"/></linearGradient></defs><polyline id="mLine" points=""/></svg><div class="pop" id="mPop"></div></div>
-          <div class="g-foot"><span>Word Link</span></div>
+          <div class="g-tray"><div class="g-board" id="mBoard"><svg class="g-path"><defs><linearGradient id="gp" x1="0" x2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#bfe9ff"/></linearGradient></defs><polyline id="mLine" points=""/></svg><div class="pop" id="mPop"></div></div></div>
+          <div class="g-bottom"></div>
+          <div class="g-bar"><i id="mBar"></i></div>
         </div>
       </div>
       <svg class="cursor" id="mFinger" viewBox="0 0 24 24"><path d="M4 2l15 10.5-6.6 1.2 3.9 7.6-2.9 1.4-3.8-7.7L4.8 19z" fill="#111" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
@@ -120,6 +117,6 @@
   <span data-calm="Free. Not affiliated with Triumph, the game's publisher or Apple. Bots in cash or ranked rounds break Triumph's rules." data-chaos="Free?? Not afiliated with antyhing.">Free. Not affiliated with Triumph, the game's publisher or Apple. Bots in cash or ranked rounds break Triumph's rules.</span>
 </footer>
 
-<script src="site.js?v=7" defer></script>
+<script src="site.js?v=8" defer></script>
 </body>
 </html>
