@@ -1,7 +1,7 @@
 {
-  "version": "1.0.8",
+  "version": "1.0.9",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "bfb180c934c42addc91e7feed7b6265d7e3a07af16edee5ef15498f6e0035123",
-  "sig": "vlZnTMOADofe+7yUCZS2s9pMXbLoqhOKbkh4jHIh3unzBk8cCBaG4H7f0e+LA/AUhL/2ecxtkDxWuxu0g32gBQ==",
-  "notes": "New menu-bar panel, live access status, and a Hackathon mode toggle (human-like play)."
+  "sha256": "8f0c3507dae656a455d0ff9439b90560e7d9b5314a3cbe01f81c807b34e5ada5",
+  "sig": "yE/lwDX1BatHmknjbK4Cq69B2Jnq6kNoWj4P+R4G21cRTm6yHiAxJOJAJOsk7/6LXMNJeGotEJdN7CF15yN1DQ==",
+  "notes": "Cleaner menu-bar panel: custom controls, readable buttons, info tooltips, clickable permission links."
 }
