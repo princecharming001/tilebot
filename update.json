@@ -1,7 +1,7 @@
 {
-  "version": "1.0.5",
+  "version": "1.0.6",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "11e9acfa9b7b683079fe97b033faad25f96780360fe0476b99f7de44432ea477",
-  "sig": "MNJ3ydJ5LLmm4TQKX5tw/lH6agt9ogb7BV34HoZt0eZ7Obzpvhqb3fgR+/SaiBioq6r1gUM8jOqf4KWILZWlDw==",
-  "notes": "Adds automatic over-the-air updates."
+  "sha256": "98b2783930c399833400f14c8358d4f2e78499b21af45561cd2dbf115588eef0",
+  "sig": "DhemICpyA7IGZsnVtJGLHF0sjaVlzHixmz9F2fLX4sFQe8Ys4+cl/7avD1aL6UIPdrwoW+YIM4RFaVceX5PvBA==",
+  "notes": "Test push: validates the auto-updater. Adds a version line in the menu."
 }
