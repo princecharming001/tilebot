@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Tilebot Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f2f2;--card:#fff;--ink:#141414;--mute:#6b6b6b;--line:#e6e0e0;--on:#1f9d55;--off:#c9c2c2;--warn:#c0392b;--btn:#141414;--btnink:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121212;--card:#1c1c1c;--ink:#f2f2f2;--mute:#9a9a9a;--line:#2c2c2c;--off:#444;--btn:#f2f2f2;--btnink:#121212}}
+:root[data-theme="dark"]{--bg:#121212;--card:#1c1c1c;--ink:#f2f2f2;--mute:#9a9a9a;--line:#2c2c2c;--off:#444;--btn:#f2f2f2;--btnink:#121212}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 Helvetica,Arial,sans-serif}
+main{max-width:560px;margin:0 auto;padding:40px 16px 60px}
+h1{font:400 44px/1.05 "Instrument Serif",Georgia,serif;margin:0 0 6px}
+p.sub{color:var(--mute);margin:0 0 28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+label{display:block;font-size:13px;color:var(--mute);margin:0 0 6px}
+input{width:100%;font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+button{font:inherit;border:0;border-radius:999px;padding:11px 18px;background:var(--btn);color:var(--btnink);cursor:pointer}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.name{font-weight:600}
+.meta{font-size:13px;color:var(--mute)}
+.sw{position:relative;width:52px;height:30px;flex:none;border-radius:999px;background:var(--off);border:0;padding:0;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw[aria-checked="true"]{background:var(--on)}
+.sw[aria-checked="true"]::after{transform:translateX(22px)}
+.big{font:400 26px/1.1 "Instrument Serif",Georgia,serif}
+.msg{font-size:14px;margin-top:10px;min-height:1.2em}
+.msg.err{color:var(--warn)}
+.key{font-family:ui-monospace,Menlo,monospace;font-size:15px;word-break:break-all;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:12px;margin:10px 0}
+.hide{display:none}
+.steps{margin:8px 0 14px;padding-left:20px;color:var(--mute);font-size:14px}
+.steps li{margin:4px 0}
+a{color:inherit}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-weight:400;color:var(--mute);text-align:right;padding:6px 4px;font-size:12px}
+th:first-child,td:first-child{text-align:left}
+td{white-space:nowrap;padding:9px 4px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 14px}
+.stat{background:var(--bg);border-radius:12px;padding:10px}
+.stat b{display:block;font:400 26px/1 "Instrument Serif",Georgia,serif}
+.stat span{font-size:12px;color:var(--mute)}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div><h1>Tilebot admin</h1><p class="sub">Turn access on or off for each person, or for everyone.</p></div>
+    <button id="lock" class="ghost hide" type="button">Lock</button>
+  </div>
+
+  <!-- first time on this device -->
+  <section id="setup" class="card hide">
+    <div class="big" style="margin-bottom:8px">Set up this device</div>
+    <ol class="steps">
+      <li>On GitHub, open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Settings › Fine-grained tokens › Generate new token</a>.</li>
+      <li>Repository access: <b>Only select repositories</b> › <b>tilebot</b>.</li>
+      <li>Permissions › Repository › <b>Contents: Read and write</b>. Generate, then copy it.</li>
+    </ol>
+    <label for="tok">GitHub token</label>
+    <input id="tok" type="password" autocomplete="off" placeholder="github_pat_…">
+    <div style="height:12px"></div>
+    <label for="sbKey0">Supabase service_role key <span style="opacity:.7">(optional, for usage stats)</span></label>
+    <input id="sbKey0" type="password" autocomplete="off" placeholder="can add later">
+    <div style="height:12px"></div>
+    <label for="newpw">Choose your admin password</label>
+    <input id="newpw" type="password" autocomplete="new-password">
+    <div style="height:14px"></div>
+    <button id="save" type="button">Save and unlock</button>
+    <div id="setupMsg" class="msg"></div>
+  </section>
+
+  <!-- password gate -->
+  <section id="gate" class="card hide">
+    <label for="pw">Password</label>
+    <input id="pw" type="password" autocomplete="current-password">
+    <div style="height:14px"></div>
+    <button id="unlock" type="button">Unlock</button>
+    <button id="reset" class="ghost" type="button" style="margin-left:6px">Set up again</button>
+    <div id="gateMsg" class="msg"></div>
+  </section>
+
+  <!-- dashboard -->
+  <section id="dash" class="hide">
+    <div class="card">
+      <div class="row">
+        <div><div class="name">Tilebot is on for everyone</div><div class="meta">Off stops every copy within ~15 minutes.</div></div>
+        <button id="global" class="sw" role="switch" aria-checked="false" aria-label="Tilebot on for everyone" type="button"></button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="big" style="margin-bottom:4px">People</div>
+      <div id="people"></div>
+    </div>
+    <div class="card">
+      <div class="top"><div class="big" style="margin-bottom:6px">Usage</div><button id="refresh" class="ghost" type="button" style="padding:6px 12px;font-size:13px">Refresh</button></div>
+      <div id="usage"><div class="meta">Loading…</div></div>
+      <div id="sbSetup" class="hide">
+        <div class="meta" style="margin:6px 0 10px">To see usage, paste your Supabase <b>service_role</b> key (Supabase › Project Settings › API Keys). It's locked with your password on this device.</div>
+        <input id="sbKey" type="password" autocomplete="off" placeholder="eyJ… or sb_secret_…">
+        <div style="height:10px"></div><button id="sbSave" type="button">Save usage key</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="big" style="margin-bottom:10px">Add someone</div>
+      <label for="who">Name</label>
+      <input id="who" placeholder="e.g. Sameer" autocomplete="off">
+      <div style="height:12px"></div>
+      <button id="add" type="button">Create access key</button>
+      <div id="newKey" class="hide">
+        <div class="meta" style="margin-top:12px">Send this key to them. It is shown only once.</div>
+        <div id="keyText" class="key"></div>
+        <button id="copy" class="ghost" type="button">Copy key</button>
+      </div>
+    </div>
+    <div id="dashMsg" class="msg"></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  "use strict";
+  const REPO = "princecharming001/tilebot", PATH = "access.json", STORE = "tilebot-admin-v1";
+  const $ = (id) => document.getElementById(id);
+  const show = (id) => ["setup", "gate", "dash"].forEach((s) => $(s).classList.toggle("hide", s !== id));
+  const enc = new TextEncoder(), dec = new TextDecoder();
+  const b64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+  const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  const getStore = () => { try { return JSON.parse(localStorage.getItem(STORE) || "null"); } catch { return null; } };
+  const setStore = (v) => { try { v ? localStorage.setItem(STORE, JSON.stringify(v)) : localStorage.removeItem(STORE); return true; } catch { return false; } };
+
+  // The token is encrypted on this device with a key derived from the password; nothing secret is in this page.
+  async function keyFrom(pw, salt) {
+    const base = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 600000, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+  }
+  async function seal(token, pw) {
+    const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await keyFrom(pw, salt), enc.encode(token));
+    return { salt: b64(salt), iv: b64(iv), ct: b64(ct) };
+  }
+  async function open(box, pw) {
+    const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(box.iv) }, await keyFrom(pw, unb64(box.salt)), unb64(box.ct));
+    return dec.decode(pt);
+  }
+  async function sha256hex(s) { return [...new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(s)))].map((b) => b.toString(16).padStart(2, "0")).join(""); }
+
+  let TOKEN = null, SBKEY = null, PW = null, DOC = null, SHA = null, busy = false;
+  const pack = () => JSON.stringify({ gh: TOKEN, sb: SBKEY || null });
+  const unpack = (s) => { try { const o = JSON.parse(s); if (o && o.gh) return o; } catch {} return { gh: s, sb: null }; };
+  const api = (method, body) => fetch(`https://api.github.com/repos/${REPO}/contents/${PATH}` + (method === "GET" ? `?t=${Date.now()}` : ""), {
+    method, cache: "no-store",
+    headers: { Authorization: `Bearer ${TOKEN}`, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  async function load() {
+    const r = await api("GET");
+    if (r.status === 401 || r.status === 403) throw new Error("GitHub refused the token. Set up again with a new one.");
+    if (!r.ok) throw new Error("Couldn't read the access list (" + r.status + ").");
+    const j = await r.json();
+    SHA = j.sha; DOC = JSON.parse(dec.decode(unb64(j.content.replace(/\n/g, ""))));
+    DOC.keys = DOC.keys || {};
+  }
+  async function commit(message) {
+    const content = btoa(String.fromCharCode(...enc.encode(JSON.stringify(DOC, null, 2) + "\n")));
+    const r = await api("PUT", { message, content, sha: SHA });
+    if (!r.ok) throw new Error(r.status === 409 ? "The list changed elsewhere. Reload and try again." : "Couldn't save (" + r.status + ").");
+    SHA = (await r.json()).content.sha;
+  }
+  function say(t, err) { $("dashMsg").textContent = t; $("dashMsg").classList.toggle("err", !!err); }
+
+  function render() {
+    $("global").setAttribute("aria-checked", String(DOC.enabled !== false));
+    const box = $("people"); box.innerHTML = "";
+    const entries = Object.entries(DOC.keys);
+    if (!entries.length) box.innerHTML = '<div class="meta">No one yet.</div>';
+    for (const [h, e] of entries) {
+      const row = document.createElement("div"); row.className = "row";
+      const left = document.createElement("div");
+      left.innerHTML = `<div class="name"></div><div class="meta"></div>`;
+      left.firstChild.textContent = e.name || "Unnamed";
+      left.lastChild.textContent = e.active ? "Has access" : "Access off";
+      const sw = document.createElement("button");
+      sw.className = "sw"; sw.type = "button"; sw.setAttribute("role", "switch");
+      sw.setAttribute("aria-checked", String(!!e.active)); sw.setAttribute("aria-label", "Access for " + (e.name || "this person"));
+      sw.onclick = () => change(async () => { e.active = !e.active; await commit(`${e.active ? "Allow" : "Revoke"} ${e.name}`); return `${e.name}: access ${e.active ? "on" : "off"}.`; });
+      row.append(left, sw); box.append(row);
+    }
+  }
+  async function change(fn) {
+    if (busy) return; busy = true; say("Saving…");
+    try { const done = await fn(); render(); say(done + " Copies pick it up within ~15 minutes."); }
+    catch (e) { say(e.message, true); try { await load(); render(); } catch {} }
+    finally { busy = false; }
+  }
+
+  $("global").onclick = () => change(async () => { DOC.enabled = DOC.enabled === false; await commit(DOC.enabled ? "Turn Tilebot on" : "Turn Tilebot off for everyone"); return DOC.enabled ? "Tilebot is on." : "Tilebot is off for everyone."; });
+  $("add").onclick = () => change(async () => {
+    const name = $("who").value.trim(); if (!name) throw new Error("Type a name first.");
+    const raw = crypto.getRandomValues(new Uint8Array(12));
+    const key = "tb-" + b64(raw).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    DOC.keys[await sha256hex(key)] = { name, active: true };
+    await commit(`Add access for ${name}`);
+    $("keyText").textContent = key; $("newKey").classList.remove("hide"); $("who").value = "";
+    return `Key created for ${name}.`;
+  });
+  $("copy").onclick = async () => { try { await navigator.clipboard.writeText($("keyText").textContent); $("copy").textContent = "Copied"; } catch { $("copy").textContent = "Select and copy it"; } };
+
+  async function enter(token, sb) {
+    TOKEN = token; SBKEY = sb || null; await load(); render(); show("dash"); $("lock").classList.remove("hide"); usage();
+  }
+  const ago = (t) => { const m = (Date.now() - t) / 60000; return m < 60 ? Math.max(1, Math.round(m)) + "m ago" : m < 1440 ? Math.round(m / 60) + "h ago" : Math.round(m / 1440) + "d ago"; };
+  async function usage() {
+    const box = $("usage"), tel = DOC && DOC.telemetry;
+    $("sbSetup").classList.toggle("hide", !!SBKEY || !tel);
+    if (!tel || !tel.url) { box.innerHTML = '<div class="meta">Usage tracking isn\'t connected yet.</div>'; return; }
+    if (!SBKEY) { box.innerHTML = ""; return; }
+    box.innerHTML = '<div class="meta">Loading…</div>';
+    const since = new Date(Date.now() - 30 * 864e5).toISOString();
+    let rows;
+    try {
+      const r = await fetch(`${tel.url}/rest/v1/tilebot_events?select=ts,key_hash,kind,words,est&ts=gte.${encodeURIComponent(since)}&order=ts.desc&limit=10000`, { cache: "no-store", headers: { apikey: SBKEY, Authorization: "Bearer " + SBKEY } });
+      if (!r.ok) throw new Error(r.status === 401 ? "Supabase refused the usage key." : "Couldn't load usage (" + r.status + ").");
+      rows = await r.json();
+    } catch (e) { box.innerHTML = ""; const d = document.createElement("div"); d.className = "msg err"; d.textContent = e.message; box.append(d); $("sbSetup").classList.remove("hide"); return; }
+    const day0 = new Date(); day0.setHours(0, 0, 0, 0);
+    const per = {};
+    for (const e of rows) {
+      if (!DOC.keys[e.key_hash]) continue;
+      const p = per[e.key_hash] ||= { today: 0, week: 0, month: 0, score: 0, scored: 0, last: 0, days: new Set() };
+      const t = Date.parse(e.ts); p.last = Math.max(p.last, t);
+      if (e.kind !== "round") continue;
+      p.month++; if (t >= Date.now() - 7 * 864e5) p.week++; if (t >= day0) p.today++;
+      if (e.est > 0) { p.score += e.est; p.scored++; }
+      p.days.add(new Date(t).toDateString());
+    }
+    const names = (h) => (DOC.keys[h] && DOC.keys[h].name) || "Unknown key";
+    const all = Object.values(per);
+    const sum = (f) => all.reduce((a, p) => a + f(p), 0);
+    let html = `<div class="stats"><div class="stat"><b>${sum((p) => p.today)}</b><span>rounds today</span></div><div class="stat"><b>${sum((p) => p.week)}</b><span>last 7 days</span></div><div class="stat"><b>${all.filter((p) => p.last > Date.now() - 864e5).length}</b><span>active in 24h</span></div></div>`;
+    const list = Object.entries(per).sort((a, b) => b[1].last - a[1].last);
+    if (!list.length) { box.innerHTML = html + '<div class="meta">No one has used it in the last 30 days.</div>'; return; }
+    html += '<table><thead><tr><th>Person</th><th>Today</th><th>7d</th><th>30d</th><th>Days used</th><th>Avg score</th><th>Last used</th></tr></thead><tbody>';
+    for (const [h, p] of list) html += `<tr><td class="nm"></td><td>${p.today}</td><td>${p.week}</td><td>${p.month}</td><td>${p.days.size}</td><td>${p.scored ? Math.round(p.score / p.scored).toLocaleString() : "–"}</td><td>${ago(p.last)}</td></tr>`;
+    box.innerHTML = html + "</tbody></table>";
+    box.querySelectorAll("td.nm").forEach((td, i) => { td.textContent = names(list[i][0]); });
+  }
+  $("refresh").onclick = usage;
+  $("sbSave").onclick = async () => {
+    const k = $("sbKey").value.trim(); if (!k) return;
+    SBKEY = k; $("sbKey").value = "";
+    if (PW) setStore(await seal(pack(), PW));
+    usage();
+  };
+  $("save").onclick = async () => {
+    const t = $("tok").value.trim(), pw = $("newpw").value;
+    const m = $("setupMsg"); m.classList.add("err");
+    if (!t || pw.length < 6) { m.textContent = "Paste the token and choose a password (6+ characters)."; return; }
+    m.classList.remove("err"); m.textContent = "Checking…";
+    try { await enter(t, $("sbKey0").value.trim()); PW = pw; if (!setStore(await seal(pack(), pw))) say("This browser won't save it, so you'll set up again next time.", true); $("tok").value = $("newpw").value = $("sbKey0").value = ""; }
+    catch (e) { TOKEN = null; m.classList.add("err"); m.textContent = e.message; }
+  };
+  async function tryUnlock() {
+    const m = $("gateMsg"); m.classList.remove("err"); m.textContent = "Unlocking…";
+    let token, pw = $("pw").value;
+    try { token = unpack(await open(getStore(), pw)); }
+    catch { m.classList.add("err"); m.textContent = "Wrong password."; return; }
+    try { await enter(token.gh, token.sb); PW = pw; $("pw").value = ""; m.textContent = ""; }
+    catch (e) { m.classList.add("err"); m.textContent = e.message; }
+  }
+  $("unlock").onclick = tryUnlock;
+  $("pw").addEventListener("keydown", (e) => { if (e.key === "Enter") tryUnlock(); });
+  $("reset").onclick = () => { setStore(null); show("setup"); };
+  $("lock").onclick = () => { TOKEN = SBKEY = PW = DOC = SHA = null; $("lock").classList.add("hide"); $("newKey").classList.add("hide"); show(getStore() ? "gate" : "setup"); };
+  show(getStore() ? "gate" : "setup");
+})();
+</script>
+</body>
+</html>

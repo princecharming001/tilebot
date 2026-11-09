@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "_how": "To cut someone off, set their \"active\" to false. To turn Tilebot off for everyone, set \"enabled\" to false. Then Commit changes.",
+  "keys": {
+    "8864736173bd1eea429cb240b877a3e4490999989218f518d543faa78430a9a5": {
+      "name": "Anish",
+      "active": true
+    }
+  },
+  "telemetry": {
+    "url": "https://nxibeiykcgxpbmkeadth.supabase.co",
+    "key": "sb_publishable_0XafzUO0oxkFE1hkKzKqsw_LvnBdMNz"
+  }
+}
