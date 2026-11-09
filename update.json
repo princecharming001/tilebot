@@ -1,7 +1,7 @@
 {
-  "version": "1.0.13",
+  "version": "1.0.14",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "8d0378a334a69ac895d2287a3c47051c0ab874a388a8fbd8ab7589991469388e",
-  "sig": "tmS9TNzSHtEp81vBZQRikwYLCFproq0t0/PvYaReRm7DqutQwXJtofsyECOKWukyCSSemxNVNKc5r2rmx4s6Bg==",
-  "notes": "Billing: subscribe and manage your plan right from the menu."
+  "sha256": "617c04801f66e408057a94f3c227406c68d072edbd3693cce31f2a4937bb5aa6",
+  "sig": "poDHXGJbpw7TtfrkiFW+6Waf/gqC5nSBH7cPBkf11ttbRzldaUYcursF+bqb5a+Q2un7gMP54ydUBsOctKsCBA==",
+  "notes": "Referrals: share Tilebot and pay $1/day less for every friend who joins (down to $5/day)."
 }
