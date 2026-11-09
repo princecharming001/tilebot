@@ -164,6 +164,25 @@ button.sm{padding:8px 13px;font-size:14px}
 .banner{background:var(--red-soft);color:var(--red);border:1px solid var(--red);border-radius:8px;padding:11px 16px;font-size:14px;margin-bottom:16px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(18px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:7px;font-size:14px;opacity:0;pointer-events:none;transition:all .2s;z-index:9}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* graphs */
+.glegend{display:flex;gap:16px;font-size:12px;color:var(--mute);margin-bottom:8px;flex-wrap:wrap}
+.glegend span{display:inline-flex;align-items:center;gap:6px}
+.gsw{width:10px;height:10px;border-radius:3px}
+.gchart{display:flex;align-items:flex-end;gap:4px;height:92px}
+.gcol{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:2px;height:100%}
+.gcol i{flex:1;max-width:10px;border-radius:2px 2px 0 0;min-height:2px}
+.gdays{display:flex;gap:4px;margin-top:5px}
+.gday{flex:1;text-align:center;font-size:10px;color:var(--faint)}
+.ptrack{border-top:1px solid var(--line-2);padding:13px 0}
+.ptrack:first-child{border-top:0}
+.ptrack .ph{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px;flex-wrap:wrap}
+.ptrack .pn{font-family:var(--serif);font-size:19px;letter-spacing:-0.01em;display:flex;align-items:center;gap:9px}
+.ptrack .pnums{font-size:13px;color:var(--mute)}
+.ptrack .pnums b{color:var(--ink);font-weight:600}
+/* live pulse */
+@keyframes tb-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.stat .dot{animation:tb-pulse 1.2s ease-in-out infinite}
+.chip.now::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#6cf09a;margin-right:6px;vertical-align:0;animation:tb-pulse 1.2s ease-in-out infinite}
 .hide{display:none!important}
 </style>
 </head>
@@ -206,10 +225,13 @@ button.sm{padding:8px 13px;font-size:14px}
 
     <div class="sec">Overview</div>
     <div class="card p"><div class="stats" id="stats"></div></div>
-    <div class="card p sparkcard">
-      <div class="sparkhead"><span>Games played · last 14 days</span><span id="sparkTotal"></span></div>
-      <div class="spark" id="spark"></div>
+    <div class="card p" style="margin-top:16px">
+      <div class="sparkhead" style="margin-bottom:10px"><span>Games per day · last 14 days</span><span id="sparkTotal"></span></div>
+      <div id="graphsCard"></div>
     </div>
+
+    <div class="sec">By player</div>
+    <div class="card p" id="tracksCard"></div>
 
     <div class="sec">You</div>
     <div class="card you" id="youCard"></div>
@@ -257,7 +279,7 @@ button.sm{padding:8px 13px;font-size:14px}
   try { PW = sessionStorage.getItem("tb-pw") || ""; } catch {}
   let ME = ""; try { ME = localStorage.getItem("tb-me") || ""; } catch {}
 
-  const S = { data: null, q: "", sort: "recent", open: null, editing: false, busy: false, code: null };
+  const S = { data: null, q: "", sort: "recent", open: new Set(), editing: false, busy: false, code: null };
 
   let apiCall = async (action, extra = {}) => {
     const r = await fetch(API, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ password: PW, action, ...extra }) });
@@ -380,7 +402,7 @@ button.sm{padding:8px 13px;font-size:14px}
   }
 
   function personHTML(p) {
-    const open = S.open === p.hash;
+    const open = S.open.has(p.hash);
     const copyBtn = p.code
       ? `<button class="icbtn pri" data-act="copy">Copy code</button>`
       : `<button class="icbtn" data-act="makecode">Make code</button>`;
@@ -448,7 +470,7 @@ button.sm{padding:8px 13px;font-size:14px}
     const el = document.querySelector(`.prow[data-hash="${p.hash}"]`);
     if (!el) return;
     const on = (sel, fn) => el.querySelectorAll(sel).forEach((n) => n.addEventListener("click", fn));
-    el.querySelectorAll('[data-act="toggleOpen"]').forEach((n) => n.addEventListener("click", () => { S.open = S.open === p.hash ? null : p.hash; S.editing = false; renderPeople(); }));
+    el.querySelectorAll('[data-act="toggleOpen"]').forEach((n) => n.addEventListener("click", () => { S.open.has(p.hash) ? S.open.delete(p.hash) : S.open.add(p.hash); S.editing = false; renderPeople(); }));
     on('[data-act="star"]', (e) => { e.stopPropagation(); setMe(ME === p.hash ? "" : p.hash); });
     const access = el.querySelector('[data-act="access"]');
     if (access) access.addEventListener("click", (e) => { e.stopPropagation(); act("toggle", { hash: p.hash, active: !p.active }, `${p.name}: access ${p.active ? "off" : "on"}`); });
@@ -457,7 +479,7 @@ button.sm{padding:8px 13px;font-size:14px}
     on('[data-act="newcode"]', () => { if (confirm(`Replace ${p.name}'s code? Their current code stops working right away.`)) genCode(p); });
     const mini = el.querySelector("[data-mini]"); if (mini) spark(mini, p.daily || []);
     on('[data-act="edit"]', () => openEdit(p));
-    on('[data-act="remove"]', () => { if (confirm(`Remove ${p.name}? This deletes their access and usage history. This can't be undone.`)) act("remove", { hash: p.hash }, `${p.name} removed`).then(() => { S.open = null; if (ME === p.hash) setMe(""); }); });
+    on('[data-act="remove"]', () => { if (confirm(`Remove ${p.name}? This deletes their access and usage history. This can't be undone.`)) act("remove", { hash: p.hash }, `${p.name} removed`).then(() => { S.open.delete(p.hash); if (ME === p.hash) setMe(""); }); });
   }
 
   function openEdit(p) {
@@ -502,6 +524,33 @@ button.sm{padding:8px 13px;font-size:14px}
     el.querySelector("[data-x]").onclick = () => { S.code = null; el.classList.add("hide"); };
   }
 
+  const PALETTE = ['#141414', '#b5651d', '#1f9d55', '#2b6cb0', '#8a5fb0', '#c0392b', '#2a7d7b'];
+  function renderGraphs(d) {
+    const ppl = d.people || [], days = d.days || [];
+    let max = 1; for (const p of ppl) for (const v of (p.daily || [])) if (v > max) max = v;
+    const legend = ppl.map((p, i) => `<span><span class="gsw" style="background:${PALETTE[i % PALETTE.length]}"></span>${esc(p.name)}</span>`).join("");
+    let cols = "";
+    for (let di = 0; di < days.length; di++) {
+      const bars = ppl.map((p, i) => { const v = (p.daily || [])[di] || 0; return `<i title="${esc(p.name)}: ${plural(v, "game")} · ${days[di]}" style="height:${Math.round(v / max * 100)}%;background:${PALETTE[i % PALETTE.length]}"></i>`; }).join("");
+      cols += `<div class="gcol">${bars}</div>`;
+    }
+    const wd = ["S", "M", "T", "W", "T", "F", "S"];
+    const labels = days.map((ds) => { const dt = new Date(ds + "T12:00:00"); return `<div class="gday">${isNaN(dt) ? "" : wd[dt.getDay()]}</div>`; }).join("");
+    $("graphsCard").innerHTML = ppl.length
+      ? `<div class="glegend">${legend}</div><div class="gchart">${cols}</div><div class="gdays">${labels}</div>`
+      : '<div class="empty">No players yet.</div>';
+    $("tracksCard").innerHTML = ppl.length ? ppl.map((p, i) => {
+      const col = PALETTE[i % PALETTE.length];
+      let mx = 1; for (const v of (p.daily || [])) if (v > mx) mx = v;
+      const mini = (p.daily || []).map((v) => `<i style="height:${Math.round(v / mx * 100)}%;background:${col};opacity:${v ? 1 : .35}"></i>`).join("");
+      const live = p.last && Date.now() - Date.parse(p.last) < 15 * 60e3;
+      return `<div class="ptrack">
+        <div class="ph"><div class="pn">${esc(p.name)}${live ? ' <span class="chip now">Playing now</span>' : ""}</div>
+        <div class="pnums"><b>${p.today}</b> today · <b>${p.week}</b> wk · <b>${p.month}</b> mo · best <b>${p.best ?? "—"}</b></div></div>
+        <div class="mini">${mini}</div></div>`;
+    }).join("") : '<div class="empty">No players yet.</div>';
+  }
+
   function render(d) {
     S.data = d;
     $("global").setAttribute("aria-checked", String(d.enabled));
@@ -514,8 +563,8 @@ button.sm{padding:8px 13px;font-size:14px}
       [s.activeToday ?? 0, "active today"],
       [s.gamesToday ?? 0, "games today"],
     ].map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join("");
-    spark($("spark"), s.daily || []);
     $("sparkTotal").textContent = `${(s.daily || []).reduce((a, b) => a + b, 0)} total · ${plural(s.gamesWeek ?? 0, "game")} this week`;
+    renderGraphs(d);
     const def = d.defaultDaily ?? 10;
     if (document.activeElement !== $("defInput")) $("defInput").value = def;
     $("defTitle").textContent = def === 0 ? "No daily limit" : `${def} game${def === 1 ? "" : "s"} a day each`;
@@ -581,7 +630,7 @@ button.sm{padding:8px 13px;font-size:14px}
     toast("CSV downloaded");
   }
 
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.open && !S.editing) { S.open = null; renderPeople(); } });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.open.size && !S.editing) { S.open.clear(); renderPeople(); } });
 
   if (PW) apiCall("list").then((d) => { render(d); showDash(); }).catch(logout);
   setInterval(() => { if (PW && !document.hidden && !S.editing && !S.busy && !$("dash").classList.contains("hide")) apiCall("list").then(render).catch(() => {}); }, 30000);
