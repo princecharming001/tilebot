@@ -1,7 +1,7 @@
 {
-  "version": "1.0.9",
+  "version": "1.0.10",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "8f0c3507dae656a455d0ff9439b90560e7d9b5314a3cbe01f81c807b34e5ada5",
-  "sig": "yE/lwDX1BatHmknjbK4Cq69B2Jnq6kNoWj4P+R4G21cRTm6yHiAxJOJAJOsk7/6LXMNJeGotEJdN7CF15yN1DQ==",
-  "notes": "Cleaner menu-bar panel: custom controls, readable buttons, info tooltips, clickable permission links."
+  "sha256": "6fe82f08dda2f305056935af04ad941633135dbe4a7bd9db044fcee9d2bad774",
+  "sig": "UfA7IM0ri+IfGidwfUjNv9DNxZTnwPJa0HrorpOEud56kqH6TD9bxQkbCnz3gG+wUqveeaLgdbbFR83U+sGwDQ==",
+  "notes": "Panel polish: inline key entry, aligned permission links, target score lives under Hackathon mode."
 }
