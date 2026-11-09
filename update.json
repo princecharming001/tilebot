@@ -1,7 +1,7 @@
 {
-  "version": "1.0.6",
+  "version": "1.0.7",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "98b2783930c399833400f14c8358d4f2e78499b21af45561cd2dbf115588eef0",
-  "sig": "DhemICpyA7IGZsnVtJGLHF0sjaVlzHixmz9F2fLX4sFQe8Ys4+cl/7avD1aL6UIPdrwoW+YIM4RFaVceX5PvBA==",
-  "notes": "Test push: validates the auto-updater. Adds a version line in the menu."
+  "sha256": "da585e42d98777c2f52e1ef9baf12205719a91e3317df56cbd0eaeda3653d321",
+  "sig": "4WkANG0+KkCrlzunTE61RBFFuCBxvIYQ7O80hhB0ySh/2IIbH0PpJxGSj8+suHy/spLxcTRvqste40uYaZWADw==",
+  "notes": "Signed & notarized \u2014 updates no longer re-ask for permissions."
 }
