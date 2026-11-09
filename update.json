@@ -1,7 +1,7 @@
 {
-  "version": "1.0.10",
+  "version": "1.0.11",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "6fe82f08dda2f305056935af04ad941633135dbe4a7bd9db044fcee9d2bad774",
-  "sig": "UfA7IM0ri+IfGidwfUjNv9DNxZTnwPJa0HrorpOEud56kqH6TD9bxQkbCnz3gG+wUqveeaLgdbbFR83U+sGwDQ==",
-  "notes": "Panel polish: inline key entry, aligned permission links, target score lives under Hackathon mode."
+  "sha256": "343064e3408f73f071ec4ed922132900bd2e08f8f8340907acbe61f145bf5637",
+  "sig": "EDFqtcK7OYr+NVn+iP0UpzgvcmjXvctTgm/hgZH/PrWzuKsSWFxXlS8krOTF4c3L00DzpMolA+j+Uqs7VcyDDw==",
+  "notes": "Copy/paste now works in the access-key field."
 }
