@@ -77,6 +77,8 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
 .ic:hover{border-color:var(--ink);opacity:1}
 .pc-stats{font-size:14px;color:var(--mute)}
 .pc-stats b{color:var(--ink);font-weight:600}
+.pc-ref{font-size:13px;color:var(--mute);margin-top:7px}
+.pc-ref b{color:var(--ink);font-weight:600}
 .pc-spark{display:flex;align-items:flex-end;gap:3px;height:34px;margin-top:11px}
 .pc-spark i{flex:1;background:#e7dede;border-radius:2px 2px 0 0;min-height:2px}
 .pc-spark i.hi{background:var(--ink)}
@@ -222,6 +224,16 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     box.innerHTML = ppl.map(cardHTML).join("");
     for (const p of ppl) wireCard(p);
   }
+  // Referral + pricing line for a player card.
+  function refLine(p) {
+    const code = p.refCode ? `code <b>${esc(p.refCode)}</b>` : "";
+    const refd = p.referredByName ? ` · via ${esc(p.referredByName)}` : "";
+    const n = p.referrals || 0;
+    const refs = `${n} ${n === 1 ? "referral" : "referrals"}`;
+    if (p.exempt) return `Free${code ? " · " + code : ""} · ${refs}${refd}`;
+    const price = (S.data && S.data.billingLive) ? `Pays <b>$${p.price}/day</b> · ` : "";
+    return `${price}${refs}${code ? " · " + code : ""}${refd}`;
+  }
   function cardHTML(p) {
     const open = S.open.has(p.hash);
     const codeLine = p.code
@@ -239,6 +251,7 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
       </div>
       <div class="pc-code">${codeLine}<span class="sep"></span><button class="ic" data-act="manage">${open ? "Close" : "Manage"}</button></div>
       <div class="pc-stats">${stats}${cap}</div>
+      <div class="pc-ref">${refLine(p)}</div>
       <div class="pc-spark">${sparkHTML(p.daily || [])}</div>
       ${open ? manageHTML(p) : ""}
     </div>`;
@@ -266,6 +279,7 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
       </div>
       <div class="acts">
         <button class="sm" data-act="save">Save</button>
+        ${p.share ? '<button class="ghost sm" data-act="sharelink">Copy share link</button>' : ""}
         ${p.code ? '<button class="ghost sm" data-act="newcode">New code</button>' : ""}
         <button class="danger sm" data-act="remove">Remove</button>
       </div>
@@ -283,6 +297,7 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     modeSel.onchange = () => { numEl.classList.toggle("hide", modeSel.value !== "custom"); if (modeSel.value === "custom") numEl.focus(); };
     const exEl = man.querySelector('[data-f="exempt"]');
     exEl.onclick = () => exEl.setAttribute("aria-checked", exEl.getAttribute("aria-checked") === "true" ? "false" : "true");
+    const sl = man.querySelector('[data-act="sharelink"]'); if (sl) sl.onclick = () => copy(p.share, `Copied ${p.name}'s share link`);
     man.querySelector('[data-act="save"]').onclick = () => {
       const g = (f) => man.querySelector(`[data-f="${f}"]`).value;
       const name = g("name").trim(); if (!name) { toast("Name can't be empty"); return; }
@@ -322,7 +337,7 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     const s = d.summary || {};
     const bl = !!d.billingLive;
     $("billing").setAttribute("aria-checked", String(bl));
-    $("billingNote").innerHTML = bl ? `$25/day · <b>${s.subscribers ?? 0}</b> subscribed` : "Off — anyone with a code can play";
+    $("billingNote").innerHTML = bl ? `$25/day · <b>${s.subscribers ?? 0}</b> subscribed · <b>${s.referrals ?? 0}</b> referrals` : "Off — anyone with a code can play";
     $("sumLeft").textContent = `${plural(s.people ?? 0, "player")}`;
     $("sumRight").innerHTML = `${s.playingNow ? '<span class="dot"></span>' + s.playingNow + " playing now · " : ""}${s.gamesToday ?? 0} games today · ${plural(s.gamesWeek ?? 0, "game")} this week`;
     if (S.code) { const p = (d.people || []).find((x) => x.name === S.code.name); if (p && p.code) S.code.code = p.code; }

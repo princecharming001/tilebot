@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6f2f2">
+<title>Join Tilebot</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0a'/%3E%3Crect x='7' y='7' width='8' height='8' rx='1.5' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='1.5' fill='%23fff' opacity='.4'/%3E%3Crect x='7' y='17' width='8' height='8' rx='1.5' fill='%23fff' opacity='.4'/%3E%3Crect x='17' y='17' width='8' height='8' rx='1.5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f2f2;--ink:#0a0a0a;--mute:#8a8a90;--line:#e2dcdc;--card:#fff;--green:#1f9d55;--gold:#8a6d3b;
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;--serif:"Instrument Serif","Times New Roman",serif;--mono:"Space Mono",ui-monospace,Menlo,monospace;
+  --shadow:0 1px 0 rgba(0,0,0,.02),0 16px 40px -30px rgba(60,40,40,.45)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;letter-spacing:-0.01em;min-height:100vh;display:grid;place-items:center;padding:28px 16px}
+.wrap{width:100%;max-width:460px}
+.brand{display:flex;align-items:center;gap:11px;justify-content:center;margin-bottom:24px}
+.brand svg{width:26px;height:26px;fill:var(--ink)}
+.brand .wm{font-family:var(--serif);font-size:27px;line-height:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:32px 28px;text-align:center}
+.ref{display:inline-block;font-size:13px;color:var(--gold);background:#f3ecdf;border-radius:999px;padding:6px 13px;margin-bottom:18px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,8vw,46px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 10px}
+.lede{color:var(--mute);margin:0 0 22px;font-size:17px}
+.price{font-family:var(--serif);font-size:40px;line-height:1;margin:0 0 4px}
+.price small{font-size:17px;color:var(--mute);font-family:var(--sans)}
+.sub{color:var(--mute);font-size:14px;margin:0 0 24px}
+button,a.btn{display:block;width:100%;font:inherit;letter-spacing:-0.01em;border:0;border-radius:10px;padding:15px 18px;background:var(--ink);color:#fff;cursor:pointer;text-decoration:none;text-align:center;transition:opacity .2s}
+button:hover,a.btn:hover{opacity:.88}
+.feat{text-align:left;margin:24px 2px 0;padding:0;list-style:none}
+.feat li{position:relative;padding:0 0 12px 26px;color:#444;font-size:15px}
+.feat li::before{content:"";position:absolute;left:2px;top:7px;width:8px;height:8px;border-radius:50%;background:var(--green)}
+.fine{color:var(--mute);font-size:12.5px;margin-top:18px;line-height:1.5}
+a{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="1.6"/><rect x="13" y="2" width="9" height="9" rx="1.6" opacity=".35"/><rect x="2" y="13" width="9" height="9" rx="1.6" opacity=".35"/><rect x="13" y="13" width="9" height="9" rx="1.6"/></svg>
+    <span class="wm">Tilebot</span>
+  </div>
+  <div class="card">
+    <div id="refTag" class="ref" style="display:none">A friend invited you 🎉</div>
+    <h1>Play Word Link on autopilot</h1>
+    <p class="lede">Tilebot reads the board and swipes the highest-scoring words for you — right through iPhone Mirroring on your Mac.</p>
+    <div class="price">$25<small> / day</small></div>
+    <p class="sub">Cancel anytime. Cancelling ends access immediately.</p>
+    <a id="go" class="btn" href="#">Subscribe &amp; get your access code →</a>
+    <ul class="feat">
+      <li>Reads the 4×4 board and plays top words automatically</li>
+      <li>Human-like swiping and timing</li>
+      <li>Hackathon mode to chase a target score</li>
+      <li><b>Refer friends, pay less</b> — every friend who joins knocks $1/day off your price (down to $5/day)</li>
+    </ul>
+    <p class="fine">Requires a Mac with iPhone Mirroring. After you subscribe you'll get an access code to paste into the Tilebot menu-bar app. Not affiliated with the game's publisher or Apple.</p>
+  </div>
+</div>
+<script>
+(() => {
+  const API = "https://nxibeiykcgxpbmkeadth.supabase.co/functions/v1/tilebot";
+  const ref = (new URLSearchParams(location.search).get("ref") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+  const go = document.getElementById("go");
+  go.href = API + "?pay=1" + (ref ? "&ref=" + encodeURIComponent(ref) : "");
+  if (ref) document.getElementById("refTag").style.display = "inline-block";
+})();
+</script>
+</body>
+</html>
