@@ -128,6 +128,10 @@ button.sm{padding:8px 13px;font-size:14px}
 .chip.exp{background:var(--red-soft);color:var(--red)}
 .chip.now{background:var(--ink);color:#fff}
 .chip.me{background:var(--ink);color:#fff}
+.chip.cap{background:#fdf1e3;color:#b5651d}
+.stepper{display:flex;align-items:center;gap:6px;flex:none}
+.stepper input{width:54px;text-align:center;padding:9px 6px}
+.stepper .icbtn{padding:9px 12px;font-size:16px;line-height:1}
 .icbtn{flex:none;background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:8px 11px;font-size:13px;line-height:1;cursor:pointer}
 .icbtn:hover{border-color:var(--ink);opacity:1}
 .icbtn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -189,6 +193,14 @@ button.sm{padding:8px 13px;font-size:14px}
       <div class="toprow">
         <div><div class="t" id="gTitle">Tilebot is on</div><div class="m">Master switch — turn off to stop it for everyone instantly.</div></div>
         <button id="global" class="sw" role="switch" aria-checked="true" aria-label="Tilebot on for everyone" type="button"></button>
+      </div>
+      <div class="toprow" style="border-top:1px solid var(--line)">
+        <div><div class="t" id="defTitle">10 games a day each</div><div class="m">Daily game cap for everyone. Override anyone below. You're exempt once pinned.</div></div>
+        <div class="stepper">
+          <button class="icbtn" id="defMinus" type="button" aria-label="Lower limit">–</button>
+          <input id="defInput" inputmode="numeric" aria-label="Daily game limit">
+          <button class="icbtn" id="defPlus" type="button" aria-label="Raise limit">+</button>
+        </div>
       </div>
     </div>
 
@@ -300,8 +312,16 @@ button.sm{padding:8px 13px;font-size:14px}
   function stateChip(p) {
     if (!p.active) return '<span class="chip">Access off</span>';
     if (p.expires && !p.live) return '<span class="chip exp">Expired</span>';
+    if (p.cappedToday) return '<span class="chip cap">At daily limit</span>';
     if (p.last && Date.now() - Date.parse(p.last) < 15 * 60e3) return '<span class="chip now">Playing now</span>';
     return '<span class="chip on">Active</span>';
+  }
+  // Label for a person's daily cap: default (N) / none / the number.
+  function capLabel(p) {
+    const def = (S.data && S.data.defaultDaily) ?? 10;
+    if (p.dailyLimit == null) return `default (${def})`;
+    if (p.dailyLimit === 0) return "no limit";
+    return `${p.dailyLimit}/day`;
   }
 
   /* ---- Admin (you) card ---- */
@@ -330,15 +350,19 @@ button.sm{padding:8px 13px;font-size:14px}
         <div><b>${me.month}</b>this month</div><div><b>${me.best == null ? "—" : me.best}</b>best</div>
         <div style="color:var(--mute)">${esc(ago(me.last))}</div>
       </div>
+      <div class="sub" style="margin:8px 2px 0">${me.dailyLimit === 0 ? "No daily limit — you're exempt." : `Daily limit: ${capLabel(me)}. <button class="link" data-act="exempt" style="color:var(--mute)">Remove it</button>`}</div>
       ${codeEl}`;
     const on = (a, fn) => { const b = el.querySelector(`[data-act="${a}"]`); if (b) b.onclick = fn; };
     on("copyme", () => copy(me.code, "Your code copied"));
     on("newme", () => { if (confirm("Replace your code? Your current one stops working right away.")) genCode(me, true); });
     on("makeme", () => genCode(me, true));
+    on("exempt", () => act("update", { hash: me.hash, daily_limit: 0 }, "Your daily limit removed"));
     on("unme", () => setMe(""));
   }
   function setMe(hash) {
     ME = hash; try { hash ? localStorage.setItem("tb-me", hash) : localStorage.removeItem("tb-me"); } catch {}
+    const me = hash ? byHash(hash) : null;
+    if (me && me.dailyLimit !== 0) { act("update", { hash, daily_limit: 0 }, "Pinned as you — daily limit removed"); return; }
     renderYou(); renderPeople();
     if (hash) toast("Pinned as you");
   }
@@ -360,7 +384,8 @@ button.sm{padding:8px 13px;font-size:14px}
     const copyBtn = p.code
       ? `<button class="icbtn pri" data-act="copy">Copy code</button>`
       : `<button class="icbtn" data-act="makecode">Make code</button>`;
-    const sub = p.active ? `${plural(p.today, "game")} today · ${plural(p.week, "game")} this week · ${ago(p.last)}` : "Access turned off";
+    const todayStr = p.effLimit > 0 ? `${p.today} / ${p.effLimit} today` : `${plural(p.today, "game")} today`;
+    const sub = p.active ? `${todayStr} · ${plural(p.week, "game")} this week · ${ago(p.last)}` : "Access turned off";
     return `
     <div class="prow ${open ? "open" : ""}" data-hash="${p.hash}">
       <div class="phead">
@@ -385,7 +410,7 @@ button.sm{padding:8px 13px;font-size:14px}
       ? `<div class="recent"><div class="r h"><span>Recent games</span><span></span></div>` +
         p.recent.slice(0, 8).map((r) => `<div class="r"><span>${esc(r.score ? r.score + " pts" : "played")}${r.words ? " · " + r.words + " words" : ""}</span><span>${ago(r.ts)}</span></div>`).join("") + `</div>`
       : `<div class="recent" style="color:var(--faint)">No games recorded yet.</div>`;
-    const info = [p.version ? `App ${esc(p.version)}` : null, `Added ${fdate(p.added)}`, p.expires ? `Expires ${fdate(p.expires)}` : "No expiry",
+    const info = [p.version ? `App ${esc(p.version)}` : null, `Daily limit ${capLabel(p)}`, `Added ${fdate(p.added)}`, p.expires ? `Expires ${fdate(p.expires)}` : "No expiry",
       p.code ? `Code <span class="cd">${esc(p.code)}</span>` : "No code saved"].filter(Boolean).join(" · ");
     const codeAct = p.code
       ? `<button class="ghost sm" data-act="copy">Copy code</button><button class="ghost sm" data-act="newcode">New code</button>`
@@ -402,9 +427,19 @@ button.sm{padding:8px 13px;font-size:14px}
   }
 
   function editFormHTML(p) {
+    const def = (S.data && S.data.defaultDaily) ?? 10;
+    const mode = p.dailyLimit == null ? "default" : p.dailyLimit === 0 ? "none" : "custom";
     return `
       <div class="f"><label>Name</label><input data-f="name" value="${esc(p.name)}" maxlength="40"></div>
       <div class="f"><label>Note (only you see this)</label><textarea data-f="note" maxlength="500" placeholder="e.g. cousin, trial, paid">${esc(p.note)}</textarea></div>
+      <div class="f"><label>Daily game limit</label>
+        <select data-f="limitmode">
+          <option value="default"${mode === "default" ? " selected" : ""}>Use default (${def} a day)</option>
+          <option value="none"${mode === "none" ? " selected" : ""}>No limit</option>
+          <option value="custom"${mode === "custom" ? " selected" : ""}>Custom…</option>
+        </select>
+        <input type="number" min="1" data-f="limitnum" class="${mode === "custom" ? "" : "hide"}" style="margin-top:8px" placeholder="games per day" value="${mode === "custom" ? p.dailyLimit : ""}">
+      </div>
       <div class="f"><label>Access expires (optional)</label><input type="date" data-f="expires" value="${toYMD(p.expires)}"></div>
       <div class="frow"><button class="sm" data-act="save">Save</button><button class="ghost sm" data-act="cancelEdit">Cancel</button>${p.expires ? '<button class="ghost sm" data-act="clearExp">Clear expiry</button>' : ""}</div>`;
   }
@@ -431,11 +466,16 @@ button.sm{padding:8px 13px;font-size:14px}
     if (!el) return;
     el.className = "edit"; el.innerHTML = editFormHTML(p);
     el.querySelector('[data-act="cancelEdit"]').onclick = () => { S.editing = false; renderPeople(); };
+    const modeSel = el.querySelector('[data-f="limitmode"]'), numEl = el.querySelector('[data-f="limitnum"]');
+    modeSel.onchange = () => { numEl.classList.toggle("hide", modeSel.value !== "custom"); if (modeSel.value === "custom") numEl.focus(); };
     el.querySelector('[data-act="save"]').onclick = () => {
       const g = (f) => el.querySelector(`[data-f="${f}"]`).value;
       const name = g("name").trim(); if (!name) { toast("Name can't be empty"); return; }
+      let daily_limit = null; // default
+      if (modeSel.value === "none") daily_limit = 0;
+      else if (modeSel.value === "custom") { const n = parseInt(numEl.value, 10); if (!(n >= 1)) { toast("Enter a number of games, or pick No limit"); return; } daily_limit = n; }
       S.editing = false;
-      act("update", { hash: p.hash, name, note: g("note"), expires: g("expires") || "" }, "Saved");
+      act("update", { hash: p.hash, name, note: g("note"), expires: g("expires") || "", daily_limit }, "Saved");
     };
     const clr = el.querySelector('[data-act="clearExp"]');
     if (clr) clr.onclick = () => { S.editing = false; act("update", { hash: p.hash, expires: "" }, "Expiry cleared"); };
@@ -476,6 +516,9 @@ button.sm{padding:8px 13px;font-size:14px}
     ].map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join("");
     spark($("spark"), s.daily || []);
     $("sparkTotal").textContent = `${(s.daily || []).reduce((a, b) => a + b, 0)} total · ${plural(s.gamesWeek ?? 0, "game")} this week`;
+    const def = d.defaultDaily ?? 10;
+    if (document.activeElement !== $("defInput")) $("defInput").value = def;
+    $("defTitle").textContent = def === 0 ? "No daily limit" : `${def} game${def === 1 ? "" : "s"} a day each`;
     if (S.code) { const p = byHash(S.code.hash); if (p && p.code) S.code.code = p.code; }
     renderYou();
     renderPeople();
@@ -519,6 +562,10 @@ button.sm{padding:8px 13px;font-size:14px}
   };
   $("q").oninput = (e) => { S.q = e.target.value; renderPeople(); };
   $("sort").onchange = (e) => { S.sort = e.target.value; renderPeople(); };
+  const setDefault = (n) => { n = Math.max(0, Math.min(999, Math.trunc(n))); if (!Number.isFinite(n)) return; act("default", { limit: n }, n === 0 ? "No daily limit for anyone" : `Daily limit set to ${n}`); };
+  $("defMinus").onclick = () => setDefault((parseInt($("defInput").value, 10) || 0) - 1);
+  $("defPlus").onclick = () => setDefault((parseInt($("defInput").value, 10) || 0) + 1);
+  $("defInput").onchange = (e) => { const n = parseInt(e.target.value, 10); if (Number.isFinite(n)) setDefault(n); };
   $("exportBtn").onclick = () => exportCSV();
 
   function exportCSV() {
