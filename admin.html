@@ -4,155 +4,216 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f6f2f2">
 <title>Tilebot Admin</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0a'/%3E%3Crect x='7' y='7' width='8' height='8' rx='1.5' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='1.5' fill='%23fff' opacity='.4'/%3E%3Crect x='7' y='17' width='8' height='8' rx='1.5' fill='%23fff' opacity='.4'/%3E%3Crect x='17' y='17' width='8' height='8' rx='1.5' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f6f2f2;--card:#fff;--ink:#141414;--mute:#777;--faint:#a79f9f;--line:#ebe5e5;
-  --on:#1f9d55;--on-soft:#e6f4ec;--off:#cfc8c8;--warn:#c0392b;--warn-soft:#fbeceb;
-  --btn:#141414;--btnink:#fff;--chip:#f0eaea;--accent:#2b6cb0;--bar:#d8cfcf;--bar-hi:#141414;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#111;--card:#1b1b1b;--ink:#f2f2f2;--mute:#999;--faint:#6b6b6b;--line:#2a2a2a;
-  --on:#2ec16b;--on-soft:#16311f;--off:#444;--warn:#e06a5c;--warn-soft:#331a17;
-  --btn:#f2f2f2;--btnink:#111;--chip:#262626;--accent:#6ba6e0;--bar:#333;--bar-hi:#f2f2f2;
-}}
-:root[data-theme="dark"]{
-  --bg:#111;--card:#1b1b1b;--ink:#f2f2f2;--mute:#999;--faint:#6b6b6b;--line:#2a2a2a;
-  --on:#2ec16b;--on-soft:#16311f;--off:#444;--warn:#e06a5c;--warn-soft:#331a17;
-  --btn:#f2f2f2;--btnink:#111;--chip:#262626;--accent:#6ba6e0;--bar:#333;--bar-hi:#f2f2f2;
+  --bg:#f6f2f2; --ink:#0a0a0a; --mute:#8a8a90; --faint:#b4acac; --line:#e2dcdc; --line-2:#ece6e6;
+  --card:#fff; --red:#e5372f; --red-soft:#fbe9e7; --green:#1f9d55; --chip:#f0eaea;
+  --serif:"Instrument Serif","Times New Roman",serif;
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,monospace;
+  --shadow:0 1px 0 rgba(0,0,0,.02),0 18px 44px -30px rgba(60,40,40,.45);
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-main{max-width:640px;margin:0 auto;padding:40px 16px 72px}
-h1{font:400 44px/1.05 "Instrument Serif",Georgia,serif;margin:0}
-.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:22px}
-.link{background:none;border:0;color:var(--mute);font:inherit;font-size:14px;cursor:pointer;padding:4px;text-decoration:underline;text-underline-offset:3px}
-.link:hover{color:var(--ink)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:4px 18px;margin-bottom:16px}
-.card.pad{padding:18px}
-input,select,textarea{width:100%;font:inherit;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
-textarea{resize:vertical;min-height:52px}
-select{cursor:pointer;-webkit-appearance:none;appearance:none}
-button{font:inherit;border:0;border-radius:999px;padding:13px 20px;background:var(--btn);color:var(--btnink);cursor:pointer}
-button:disabled{opacity:.45;cursor:default}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--sans);-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+main{max-width:660px;margin:0 auto;padding:36px clamp(16px,5vw,28px) 80px}
+a{color:inherit}
+
+/* header */
+.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}
+.brand{display:inline-flex;align-items:center;gap:11px}
+.brand svg{width:26px;height:26px;fill:var(--ink)}
+.brand .wm{font-family:var(--serif);font-size:27px;letter-spacing:-0.01em;line-height:1}
+.brand .tag{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.14em;border-left:1px solid var(--line);padding-left:11px;margin-left:3px}
+.link{background:none;border:0;color:var(--mute);font:inherit;font-size:14px;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--line)}
+.link:hover{color:var(--ink);text-decoration-color:currentColor}
+
+/* editorial section header */
+.sec{font-family:var(--serif);font-size:30px;line-height:1;letter-spacing:-0.025em;margin:40px 2px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.sec .cnt{font-family:var(--sans);font-size:13px;letter-spacing:-0.01em;color:var(--mute)}
+.sub{font-size:15px;color:var(--mute);margin:-8px 2px 16px;letter-spacing:-0.01em}
+
+/* login */
+.login{max-width:360px;margin:8vh auto 0}
+.login h1{font-family:var(--serif);font-weight:400;font-size:clamp(44px,9vw,64px);line-height:.95;letter-spacing:-0.035em;margin:0 0 6px}
+.login p{color:var(--mute);margin:0 0 26px;font-size:16px}
+input,select,textarea{width:100%;font:inherit;letter-spacing:-0.01em;padding:13px 14px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink)}
+input::placeholder,textarea::placeholder{color:var(--faint)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink)}
+textarea{resize:vertical;min-height:54px}
+select{cursor:pointer;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 16px) 19px,calc(100% - 11px) 19px;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px}
+
+/* buttons — landing style, 6px */
+button{font:inherit;letter-spacing:-0.01em;border:0;border-radius:6px;padding:12px 18px;background:var(--ink);color:#fff;cursor:pointer;transition:transform .12s,opacity .2s}
+button:hover{opacity:.88}
+button:active{transform:translateY(1px)}
+button:disabled{opacity:.4;cursor:default;transform:none}
 button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
-button.ghost:hover{border-color:var(--mute)}
-button.danger{background:transparent;color:var(--warn);border:1px solid var(--line)}
-button.danger:hover{border-color:var(--warn)}
-button.sm{padding:8px 14px;font-size:14px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 0;border-top:1px solid var(--line)}
-.row:first-child{border-top:0}
-.name{font-weight:600;font-size:17px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.meta{font-size:14px;color:var(--mute);margin-top:3px}
-.sw{position:relative;width:52px;height:30px;flex:none;border-radius:999px;background:var(--off);border:0;padding:0;transition:background .2s;cursor:pointer}
-.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-.sw[aria-checked="true"]{background:var(--on)}
+button.ghost:hover{border-color:var(--ink);opacity:1}
+button.danger{background:transparent;color:var(--red);border:1px solid var(--line)}
+button.danger:hover{border-color:var(--red);opacity:1}
+button.sm{padding:8px 13px;font-size:14px}
+
+/* cards + rows */
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+.card.p{padding:18px 20px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px}
+.toprow .t{font-family:var(--serif);font-size:23px;line-height:1;letter-spacing:-0.02em}
+.toprow .m{font-size:14px;color:var(--mute);margin-top:5px}
+
+/* toggle — landing pill */
+.sw{position:relative;width:52px;height:30px;flex:none;border-radius:999px;background:#d7d0d0;border:0;padding:0;cursor:pointer;transition:background .25s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .28s cubic-bezier(.3,1.4,.5,1);box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw[aria-checked="true"]{background:var(--ink)}
 .sw[aria-checked="true"]::after{transform:translateX(22px)}
-.label{font-size:13px;color:var(--mute);margin:26px 4px 8px;text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:baseline}
-.msg{font-size:14px;min-height:1.2em;margin:8px 4px;color:var(--mute)}
-.msg.err{color:var(--warn)}
-.hide{display:none!important}
-.key{font:17px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.04em;background:var(--bg);border:1px dashed var(--line);border-radius:12px;padding:14px;word-break:break-all}
 
-/* stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px}
-.stat{background:var(--card);padding:14px 12px}
-.stat b{display:block;font-size:24px;font-weight:600;line-height:1.1}
-.stat span{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.04em}
-.stat.live b{color:var(--on)}
-@media(max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}}
+/* stats — editorial numerals */
+.stats{display:grid;grid-template-columns:repeat(4,1fr)}
+.stat{padding:4px 16px;border-left:1px solid var(--line)}
+.stat:first-child{border-left:0;padding-left:2px}
+.stat b{display:block;font-family:var(--serif);font-size:42px;line-height:1;letter-spacing:-0.03em;font-weight:400}
+.stat b .of{font-size:20px;color:var(--faint)}
+.stat span{display:block;font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;margin-top:7px}
+.stat .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:5px;vertical-align:1px}
+@media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr);gap:18px 0}.stat:nth-child(odd){border-left:0;padding-left:2px}}
 
-/* spark */
-.spark{display:flex;align-items:flex-end;gap:3px;height:38px}
-.spark i{flex:1;background:var(--bar);border-radius:3px 3px 0 0;min-height:2px;transition:height .2s}
-.spark i.hi{background:var(--bar-hi)}
-.sparkwrap{padding:4px 2px 2px}
-.mini{display:flex;align-items:flex-end;gap:2px;height:26px;margin:4px 0}
-.mini i{flex:1;background:var(--bar);border-radius:2px 2px 0 0;min-height:2px}
+/* sparkline */
+.sparkcard{margin-top:16px;padding:16px 20px}
+.sparkhead{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--mute);margin-bottom:10px}
+.spark{display:flex;align-items:flex-end;gap:4px;height:44px}
+.spark i{flex:1;background:#e0d8d8;border-radius:3px 3px 0 0;min-height:2px}
+.spark i.hi{background:var(--ink)}
+.mini{display:flex;align-items:flex-end;gap:2px;height:28px;margin:2px 0 10px}
+.mini i{flex:1;background:#e0d8d8;border-radius:2px 2px 0 0;min-height:2px}
 
-/* people */
+/* Admin (you) card */
+.you{padding:18px 20px;border:1px solid var(--ink);box-shadow:var(--shadow)}
+.you .lab{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--mute);display:flex;justify-content:space-between;align-items:center}
+.you .nm{font-family:var(--serif);font-size:26px;letter-spacing:-0.02em;line-height:1;margin:8px 0 2px}
+.you .codebig{font:700 24px/1 var(--mono);letter-spacing:.04em;margin:14px 0}
+.you .youstats{display:flex;gap:22px;margin:12px 0 2px;flex-wrap:wrap}
+.you .youstats div{font-size:14px;color:var(--mute)}
+.you .youstats b{font-family:var(--serif);font-size:22px;color:var(--ink);font-weight:400;margin-right:5px;letter-spacing:-0.02em}
+.pick{display:flex;gap:8px;margin-top:12px}
+.pick select{flex:1}
+
+/* add */
+.addrow{display:flex;gap:9px}
+.addrow input{flex:1}
+.codepanel{border:1px solid var(--ink);border-radius:9px;padding:18px 20px;margin-bottom:16px;background:#fcfbf9}
+.codepanel .who{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--mute);display:flex;justify-content:space-between;align-items:center}
+.codepanel .big{font:700 30px/1 var(--mono);letter-spacing:.05em;margin:12px 0 16px;text-align:center}
+.codepanel .frow{display:flex;gap:9px}
+.codepanel .frow button{flex:1}
+
+/* search */
+.search{display:flex;gap:9px;margin-bottom:6px}
+.search input{flex:1}
+.search select{width:auto;flex:none}
+
+/* people rows */
 .prow{border-top:1px solid var(--line)}
 .prow:first-child{border-top:0}
-.phead{display:flex;align-items:center;gap:12px;padding:14px 0;cursor:pointer}
+.phead{display:flex;align-items:center;gap:12px;padding:16px 0;cursor:pointer}
 .phead .grow{flex:1;min-width:0}
-.chip{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--chip);color:var(--mute)}
-.chip.on{background:var(--on-soft);color:var(--on)}
-.chip.off{background:var(--chip);color:var(--faint)}
-.chip.exp{background:var(--warn-soft);color:var(--warn)}
-.chip.now{background:var(--on);color:#fff}
-.icbtn{flex:none;background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;gap:6px}
-.icbtn:hover{border-color:var(--mute)}
-.icbtn.pri{background:var(--btn);color:var(--btnink);border-color:var(--btn)}
-.caret{color:var(--faint);transition:transform .15s;flex:none}
+.nm{font-family:var(--serif);font-size:21px;letter-spacing:-0.015em;line-height:1.05;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.meta{font-size:13.5px;color:var(--mute);margin-top:4px}
+.chip{display:inline-block;font:400 11px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:5px;background:var(--chip);color:var(--mute)}
+.chip.on{background:#eef3f0;color:var(--green)}
+.chip.exp{background:var(--red-soft);color:var(--red)}
+.chip.now{background:var(--ink);color:#fff}
+.chip.me{background:var(--ink);color:#fff}
+.icbtn{flex:none;background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:8px 11px;font-size:13px;line-height:1;cursor:pointer}
+.icbtn:hover{border-color:var(--ink);opacity:1}
+.icbtn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.star{flex:none;background:transparent;border:0;color:var(--faint);font-size:17px;line-height:1;padding:6px;cursor:pointer}
+.star:hover{color:var(--ink);opacity:1}
+.star.on{color:var(--ink)}
+.caret{color:var(--faint);transition:transform .15s;flex:none;font-size:12px;padding-left:2px}
 .prow.open .caret{transform:rotate(90deg)}
-.detail{padding:4px 0 20px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 14px}
-.box{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.box b{display:block;font-size:19px;font-weight:600}
-.box span{font-size:12px;color:var(--mute)}
-.recent{font-size:13px;color:var(--mute);margin-top:8px}
-.recent div{display:flex;justify-content:space-between;padding:4px 0;border-top:1px solid var(--line)}
-.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.edit{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px}
-.edit .f{margin-bottom:10px}
-.edit .f label{display:block;font-size:12px;color:var(--mute);margin:0 0 5px 2px;text-transform:uppercase;letter-spacing:.04em}
-.frow{display:flex;gap:8px}
-.search{display:flex;gap:8px;align-items:center;margin-bottom:4px}
-.search select{width:auto;flex:none;padding:13px 30px 13px 12px;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 15px) 18px,calc(100% - 10px) 18px;background-size:5px 5px;background-repeat:no-repeat}
-.add{display:flex;gap:8px;padding:14px 0}
-.codepanel{border:1px solid var(--on);background:var(--on-soft);border-radius:14px;padding:16px;margin:4px 0 14px}
-.codepanel .who{font-size:13px;color:var(--on);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;display:flex;justify-content:space-between}
-.codepanel .big{font:28px/1 ui-monospace,Menlo,monospace;letter-spacing:.06em;color:var(--ink);margin:4px 0 14px;text-align:center}
-.codepanel .frow button{flex:1}
-.banner{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);border-radius:12px;padding:10px 14px;font-size:14px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:all .2s;z-index:9}
+.detail{padding:2px 0 22px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.gcell{padding:10px 14px 12px;border-left:1px solid var(--line);border-top:1px solid var(--line)}
+.gcell:nth-child(3n+1){border-left:0;padding-left:2px}
+.gcell b{display:block;font-family:var(--serif);font-size:28px;line-height:1;letter-spacing:-0.02em;font-weight:400}
+.gcell span{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.05em}
+.infoline{font-size:13px;color:var(--mute);margin:14px 0 4px}
+.infoline .cd{font-family:var(--mono);color:var(--ink)}
+.recent{font-size:13px;color:var(--mute);margin-top:6px}
+.recent .r{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--line-2)}
+.recent .h{color:var(--faint);border:0;padding-bottom:2px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.edit{border:1px solid var(--line);border-radius:9px;padding:16px;margin-top:14px;background:#fcfbf9}
+.edit .f{margin-bottom:11px}
+.edit .f label{display:block;font-size:12px;color:var(--mute);margin:0 0 5px 1px;text-transform:uppercase;letter-spacing:.05em}
+.frow{display:flex;gap:8px;flex-wrap:wrap}
+
+.msg{font-size:14px;min-height:1.2em;margin:12px 2px;color:var(--mute)}
+.msg.err{color:var(--red)}
+.empty{color:var(--mute);padding:22px 0;text-align:center}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:30px;font-size:13px;color:var(--faint);flex-wrap:wrap;gap:8px}
+.banner{background:var(--red-soft);color:var(--red);border:1px solid var(--red);border-radius:8px;padding:11px 16px;font-size:14px;margin-bottom:16px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(18px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:7px;font-size:14px;opacity:0;pointer-events:none;transition:all .2s;z-index:9}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.empty{color:var(--mute);padding:18px 0;text-align:center;font-size:15px}
-.foot{display:flex;justify-content:space-between;align-items:center;margin-top:26px;font-size:13px;color:var(--faint)}
+.hide{display:none!important}
 </style>
 </head>
 <body>
 <main>
-  <div class="top"><h1>Tilebot admin</h1><button id="logout" class="link hide" type="button">Log out</button></div>
+  <div class="head">
+    <span class="brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="1.6"/><rect x="13" y="2" width="9" height="9" rx="1.6" opacity=".35"/><rect x="2" y="13" width="9" height="9" rx="1.6" opacity=".35"/><rect x="13" y="13" width="9" height="9" rx="1.6"/></svg>
+      <span class="wm">Tilebot</span><span class="tag">Admin</span>
+    </span>
+    <button id="logout" class="link hide" type="button">Log out</button>
+  </div>
 
-  <form id="login">
+  <form id="login" class="login">
+    <h1>Admin</h1>
+    <p>Enter your password to manage access.</p>
     <input id="pw" type="password" placeholder="Password" autocomplete="current-password" autofocus>
     <div style="height:12px"></div>
-    <button id="go" type="submit">Enter</button>
+    <button id="go" type="submit" style="width:100%">Enter</button>
     <div id="loginMsg" class="msg"></div>
   </form>
 
   <section id="dash" class="hide">
-    <div id="offBanner" class="banner hide">⚠ Tilebot is OFF for everyone right now.</div>
+    <div id="offBanner" class="banner hide">Tilebot is switched off for everyone right now.</div>
 
     <div class="card">
-      <div class="row">
-        <div><div class="name" id="gTitle">Tilebot is on</div><div class="meta">Master switch — turn off to stop it for everyone instantly.</div></div>
+      <div class="toprow">
+        <div><div class="t" id="gTitle">Tilebot is on</div><div class="m">Master switch — turn off to stop it for everyone instantly.</div></div>
         <button id="global" class="sw" role="switch" aria-checked="true" aria-label="Tilebot on for everyone" type="button"></button>
       </div>
     </div>
 
-    <div class="label">At a glance</div>
-    <div class="stats" id="stats"></div>
-    <div class="card pad sparkwrap">
-      <div class="meta" style="margin:0 0 8px;display:flex;justify-content:space-between"><span>Games · last 14 days</span><span id="sparkTotal"></span></div>
+    <div class="sec">Overview</div>
+    <div class="card p"><div class="stats" id="stats"></div></div>
+    <div class="card p sparkcard">
+      <div class="sparkhead"><span>Games played · last 14 days</span><span id="sparkTotal"></span></div>
       <div class="spark" id="spark"></div>
     </div>
 
-    <div class="label">Add someone</div>
-    <div class="card pad">
+    <div class="sec">You</div>
+    <div class="card you" id="youCard"></div>
+
+    <div class="sec">Add someone</div>
+    <div class="card p">
       <div id="codePanel" class="codepanel hide"></div>
-      <form class="add" id="addForm" style="padding:0">
+      <form class="addrow" id="addForm">
         <input id="who" placeholder="Their name" autocomplete="off" maxlength="40">
         <button type="submit" id="addBtn">Add</button>
       </form>
-      <div class="meta" style="margin:8px 2px 2px">Creates an access code instantly — copy it and send it to them.</div>
+      <div class="sub" style="margin:12px 2px 0">Creates an access code instantly — it's copied for you to send them.</div>
     </div>
 
-    <div class="label"><span>People</span><span id="pcount" style="text-transform:none;letter-spacing:0"></span></div>
-    <div class="card pad">
+    <div class="sec">People <span class="cnt" id="pcount"></span></div>
+    <div class="card p">
       <div class="search">
         <input id="q" placeholder="Search name or note" autocomplete="off">
         <select id="sort" aria-label="Sort people">
@@ -182,10 +243,10 @@ button.sm{padding:8px 14px;font-size:14px}
   const $ = (id) => document.getElementById(id);
   let PW = "";
   try { PW = sessionStorage.getItem("tb-pw") || ""; } catch {}
+  let ME = ""; try { ME = localStorage.getItem("tb-me") || ""; } catch {}
 
   const S = { data: null, q: "", sort: "recent", open: null, editing: false, busy: false, code: null };
 
-  // --- API seam (overridable for local testing via window.__TB.setMock) ---
   let apiCall = async (action, extra = {}) => {
     const r = await fetch(API, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ password: PW, action, ...extra }) });
     const j = await r.json().catch(() => ({}));
@@ -193,7 +254,6 @@ button.sm{padding:8px 14px;font-size:14px}
     return j;
   };
 
-  // --- helpers ---
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
   const ago = (iso) => {
@@ -217,16 +277,16 @@ button.sm{padding:8px 14px;font-size:14px}
     return ok;
   }
 
-  // --- sparkline ---
-  function spark(el, arr, cls) {
+  function spark(el, arr) {
     const max = Math.max(1, ...arr);
     el.innerHTML = arr.map((v, i) => `<i class="${i === arr.length - 1 ? "hi" : ""}" style="height:${Math.round((v / max) * 100)}%" title="${v}"></i>`).join("");
   }
 
-  // --- filter + sort ---
+  const byHash = (h) => (S.data.people || []).find((p) => p.hash === h);
+
   function peopleView() {
     const q = S.q.trim().toLowerCase();
-    let arr = (S.data.people || []).filter((p) => !q || p.name.toLowerCase().includes(q) || (p.note || "").toLowerCase().includes(q));
+    let arr = (S.data.people || []).filter((p) => p.hash !== ME && (!q || p.name.toLowerCase().includes(q) || (p.note || "").toLowerCase().includes(q)));
     const by = {
       recent: (a, b) => (Date.parse(b.last) || 0) - (Date.parse(a.last) || 0),
       games: (a, b) => b.week - a.week || b.month - a.month,
@@ -238,37 +298,75 @@ button.sm{padding:8px 14px;font-size:14px}
   }
 
   function stateChip(p) {
-    if (!p.active) return '<span class="chip off">Access off</span>';
+    if (!p.active) return '<span class="chip">Access off</span>';
     if (p.expires && !p.live) return '<span class="chip exp">Expired</span>';
     if (p.last && Date.now() - Date.parse(p.last) < 15 * 60e3) return '<span class="chip now">Playing now</span>';
     return '<span class="chip on">Active</span>';
   }
 
-  // --- render people ---
+  /* ---- Admin (you) card ---- */
+  function renderYou() {
+    const el = $("youCard");
+    const me = ME ? byHash(ME) : null;
+    if (!me) {
+      const opts = (S.data.people || []).map((p) => `<option value="${p.hash}">${esc(p.name)}</option>`).join("");
+      el.innerHTML = `
+        <div class="lab"><span>Your own entry</span></div>
+        <div class="nm" style="font-size:22px;margin-top:10px">Track your own code &amp; usage here</div>
+        <div class="sub" style="margin:8px 2px 0">Pick which person is you. Your code shows here so you can copy it, and your games count alongside everyone else.</div>
+        <div class="pick"><select id="pickMe"><option value="">Choose your name…</option>${opts}</select></div>`;
+      const sel = $("pickMe");
+      if (sel) sel.onchange = () => { if (sel.value) setMe(sel.value); };
+      return;
+    }
+    const codeEl = me.code
+      ? `<div class="codebig">${esc(me.code)}</div><div class="frow"><button class="sm" data-act="copyme">Copy my code</button><button class="ghost sm" data-act="newme">New code</button></div>`
+      : `<div class="sub" style="margin:12px 0">No code saved for you yet.</div><div class="frow"><button class="sm" data-act="makeme">Generate my code</button></div>`;
+    el.innerHTML = `
+      <div class="lab"><span>You · admin</span><button class="link" data-act="unme" style="color:var(--mute)">Not you?</button></div>
+      <div class="nm">${esc(me.name)} <span class="chip me">You</span></div>
+      <div class="youstats">
+        <div><b>${me.today}</b>today</div><div><b>${me.week}</b>this week</div>
+        <div><b>${me.month}</b>this month</div><div><b>${me.best == null ? "—" : me.best}</b>best</div>
+        <div style="color:var(--mute)">${esc(ago(me.last))}</div>
+      </div>
+      ${codeEl}`;
+    const on = (a, fn) => { const b = el.querySelector(`[data-act="${a}"]`); if (b) b.onclick = fn; };
+    on("copyme", () => copy(me.code, "Your code copied"));
+    on("newme", () => { if (confirm("Replace your code? Your current one stops working right away.")) genCode(me, true); });
+    on("makeme", () => genCode(me, true));
+    on("unme", () => setMe(""));
+  }
+  function setMe(hash) {
+    ME = hash; try { hash ? localStorage.setItem("tb-me", hash) : localStorage.removeItem("tb-me"); } catch {}
+    renderYou(); renderPeople();
+    if (hash) toast("Pinned as you");
+  }
+
+  /* ---- people ---- */
   function renderPeople() {
     const box = $("people");
     const list = peopleView();
-    $("pcount").textContent = S.data.people.length ? `${list.length} shown` : "";
-    if (!S.data.people.length) { box.innerHTML = '<div class="empty">No one yet. Add your first person above.</div>'; return; }
+    const total = (S.data.people || []).length;
+    $("pcount").textContent = total ? `${list.length}${ME && byHash(ME) ? " besides you" : ""}` : "";
+    if (!total) { box.innerHTML = '<div class="empty">No one yet. Add your first person above.</div>'; return; }
     if (!list.length) { box.innerHTML = '<div class="empty">No matches.</div>'; return; }
     box.innerHTML = list.map(personHTML).join("");
-    // wire each row
     for (const p of list) wireRow(p);
   }
 
   function personHTML(p) {
     const open = S.open === p.hash;
     const copyBtn = p.code
-      ? `<button class="icbtn pri" data-act="copy" title="Copy ${esc(p.name)}'s code">Copy code</button>`
-      : `<button class="icbtn" data-act="makecode" title="No code saved — generate one">Make code</button>`;
-    const sub = p.active
-      ? `${plural(p.today, "game")} today · ${plural(p.week, "game")} this week · ${ago(p.last)}`
-      : "Access turned off";
+      ? `<button class="icbtn pri" data-act="copy">Copy code</button>`
+      : `<button class="icbtn" data-act="makecode">Make code</button>`;
+    const sub = p.active ? `${plural(p.today, "game")} today · ${plural(p.week, "game")} this week · ${ago(p.last)}` : "Access turned off";
     return `
     <div class="prow ${open ? "open" : ""}" data-hash="${p.hash}">
       <div class="phead">
+        <button class="star" data-act="star" title="Mark as you">${ME === p.hash ? "★" : "☆"}</button>
         <div class="grow" data-act="toggleOpen">
-          <div class="name">${esc(p.name)} ${stateChip(p)}</div>
+          <div class="nm">${esc(p.name)} ${stateChip(p)}</div>
           <div class="meta">${sub}</div>
         </div>
         ${copyBtn}
@@ -280,20 +378,15 @@ button.sm{padding:8px 14px;font-size:14px}
   }
 
   function detailHTML(p) {
-    const cells = [
-      ["Today", p.today], ["This week", p.week], ["This month", p.month],
-      ["Days active", p.days], ["Avg score", p.avg == null ? "—" : p.avg], ["Best score", p.best == null ? "—" : p.best],
-    ].map(([k, v]) => `<div class="box"><b>${v}</b><span>${k}</span></div>`).join("");
+    const cells = [["Today", p.today], ["This week", p.week], ["This month", p.month],
+      ["Days active", p.days], ["Avg score", p.avg == null ? "—" : p.avg], ["Best score", p.best == null ? "—" : p.best]]
+      .map(([k, v]) => `<div class="gcell"><b>${v}</b><span>${k}</span></div>`).join("");
     const recent = (p.recent || []).length
-      ? `<div class="recent"><div style="border:0;color:var(--faint)"><span>Recent games</span><span></span></div>` +
-        p.recent.slice(0, 8).map((r) => `<div><span>${esc(r.score ? r.score + " pts" : "played")}${r.words ? " · " + r.words + " words" : ""}</span><span>${ago(r.ts)}</span></div>`).join("") + `</div>`
+      ? `<div class="recent"><div class="r h"><span>Recent games</span><span></span></div>` +
+        p.recent.slice(0, 8).map((r) => `<div class="r"><span>${esc(r.score ? r.score + " pts" : "played")}${r.words ? " · " + r.words + " words" : ""}</span><span>${ago(r.ts)}</span></div>`).join("") + `</div>`
       : `<div class="recent" style="color:var(--faint)">No games recorded yet.</div>`;
-    const info = [
-      p.version ? `App ${esc(p.version)}` : null,
-      `Added ${fdate(p.added)}`,
-      p.expires ? `Expires ${fdate(p.expires)}` : "No expiry",
-      p.code ? `Code ${esc(p.code)}` : "No code saved",
-    ].filter(Boolean).join(" · ");
+    const info = [p.version ? `App ${esc(p.version)}` : null, `Added ${fdate(p.added)}`, p.expires ? `Expires ${fdate(p.expires)}` : "No expiry",
+      p.code ? `Code <span class="cd">${esc(p.code)}</span>` : "No code saved"].filter(Boolean).join(" · ");
     const codeAct = p.code
       ? `<button class="ghost sm" data-act="copy">Copy code</button><button class="ghost sm" data-act="newcode">New code</button>`
       : `<button class="ghost sm" data-act="makecode">Generate code</button>`;
@@ -301,13 +394,9 @@ button.sm{padding:8px 14px;font-size:14px}
     <div class="detail">
       <div class="mini" data-mini></div>
       <div class="grid">${cells}</div>
-      <div class="meta" style="margin:0 0 4px">${info}</div>
+      <div class="infoline">${info}</div>
       ${recent}
-      <div class="acts">
-        ${codeAct}
-        <button class="ghost sm" data-act="edit">Edit</button>
-        <button class="danger sm" data-act="remove">Remove</button>
-      </div>
+      <div class="acts">${codeAct}<button class="ghost sm" data-act="edit">Edit</button><button class="danger sm" data-act="remove">Remove</button></div>
       <div class="edit hide" data-edit></div>
     </div>`;
   }
@@ -323,16 +412,17 @@ button.sm{padding:8px 14px;font-size:14px}
   function wireRow(p) {
     const el = document.querySelector(`.prow[data-hash="${p.hash}"]`);
     if (!el) return;
-    const on = (sel, ev, fn) => el.querySelectorAll(sel).forEach((n) => n.addEventListener(ev, fn));
+    const on = (sel, fn) => el.querySelectorAll(sel).forEach((n) => n.addEventListener("click", fn));
     el.querySelectorAll('[data-act="toggleOpen"]').forEach((n) => n.addEventListener("click", () => { S.open = S.open === p.hash ? null : p.hash; S.editing = false; renderPeople(); }));
+    on('[data-act="star"]', (e) => { e.stopPropagation(); setMe(ME === p.hash ? "" : p.hash); });
     const access = el.querySelector('[data-act="access"]');
     if (access) access.addEventListener("click", (e) => { e.stopPropagation(); act("toggle", { hash: p.hash, active: !p.active }, `${p.name}: access ${p.active ? "off" : "on"}`); });
-    on('[data-act="copy"]', "click", (e) => { e.stopPropagation(); copy(p.code, `Copied ${p.name}'s code`); });
-    on('[data-act="makecode"]', "click", (e) => { e.stopPropagation(); if (confirm(`Generate an access code for ${p.name}? They don't have one saved yet.`)) genCode(p); });
-    on('[data-act="newcode"]', "click", () => { if (confirm(`Replace ${p.name}'s code? Their current code stops working right away.`)) genCode(p); });
+    on('[data-act="copy"]', (e) => { e.stopPropagation(); copy(p.code, `Copied ${p.name}'s code`); });
+    on('[data-act="makecode"]', (e) => { e.stopPropagation(); if (confirm(`Generate an access code for ${p.name}?`)) genCode(p); });
+    on('[data-act="newcode"]', () => { if (confirm(`Replace ${p.name}'s code? Their current code stops working right away.`)) genCode(p); });
     const mini = el.querySelector("[data-mini]"); if (mini) spark(mini, p.daily || []);
-    on('[data-act="edit"]', "click", () => openEdit(p));
-    on('[data-act="remove"]', "click", () => { if (confirm(`Remove ${p.name}? This deletes their access and usage history. This can't be undone.`)) act("remove", { hash: p.hash }, `${p.name} removed`).then(() => { S.open = null; }); });
+    on('[data-act="edit"]', () => openEdit(p));
+    on('[data-act="remove"]', () => { if (confirm(`Remove ${p.name}? This deletes their access and usage history. This can't be undone.`)) act("remove", { hash: p.hash }, `${p.name} removed`).then(() => { S.open = null; if (ME === p.hash) setMe(""); }); });
   }
 
   function openEdit(p) {
@@ -352,27 +442,26 @@ button.sm{padding:8px 14px;font-size:14px}
     const ni = el.querySelector('[data-f="name"]'); if (ni) ni.focus();
   }
 
-  async function genCode(p) {
+  async function genCode(p, isMe) {
     const d = await act("newcode", { hash: p.hash }, null, true);
-    if (d && d.newKey) { showCode(d.newKey, p.name, d.newFor); copy(d.newKey, `New code for ${p.name} copied`); }
+    if (d && d.newKey) {
+      if (isMe) { renderYou(); copy(d.newKey, "Your new code copied"); }
+      else { showCode(d.newKey, p.name, d.newFor); copy(d.newKey, `New code for ${p.name} copied`); }
+    }
   }
 
   function showCode(code, name, hash) {
     S.code = { code, name, hash };
     const el = $("codePanel"); el.classList.remove("hide");
     el.innerHTML = `
-      <div class="who"><span>Code for ${esc(name)}</span><button class="link" data-x style="color:var(--on)">Done</button></div>
+      <div class="who"><span>Code for ${esc(name)}</span><button class="link" data-x style="color:var(--mute)">Done</button></div>
       <div class="big">${esc(code)}</div>
-      <div class="frow">
-        <button data-copy>Copy code</button>
-        <button class="ghost" data-invite>Copy invite message</button>
-      </div>`;
+      <div class="frow"><button data-copy>Copy code</button><button class="ghost" data-invite>Copy invite message</button></div>`;
     el.querySelector("[data-copy]").onclick = () => copy(code, `${name}'s code copied`);
     el.querySelector("[data-invite]").onclick = () => copy(`Here's your Tilebot access code: ${code}\nDownload Tilebot, then paste this code when it asks.`, "Invite message copied");
     el.querySelector("[data-x]").onclick = () => { S.code = null; el.classList.add("hide"); };
   }
 
-  // --- global render ---
   function render(d) {
     S.data = d;
     $("global").setAttribute("aria-checked", String(d.enabled));
@@ -380,18 +469,18 @@ button.sm{padding:8px 14px;font-size:14px}
     $("offBanner").classList.toggle("hide", d.enabled);
     const s = d.summary || {};
     $("stats").innerHTML = [
-      [s.withAccess ?? 0, `of ${s.people ?? 0} with access`, ""],
-      [s.playingNow ?? 0, "playing now", s.playingNow ? "live" : ""],
-      [s.activeToday ?? 0, "active today", ""],
-      [s.gamesToday ?? 0, "games today", ""],
-    ].map(([b, t, c]) => `<div class="stat ${c}"><b>${b}</b><span>${t}</span></div>`).join("");
+      [`${s.withAccess ?? 0}<span class="of">/${s.people ?? 0}</span>`, "with access"],
+      [`${s.playingNow ? '<span class="dot"></span>' : ""}${s.playingNow ?? 0}`, "playing now"],
+      [s.activeToday ?? 0, "active today"],
+      [s.gamesToday ?? 0, "games today"],
+    ].map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join("");
     spark($("spark"), s.daily || []);
     $("sparkTotal").textContent = `${(s.daily || []).reduce((a, b) => a + b, 0)} total · ${plural(s.gamesWeek ?? 0, "game")} this week`;
-    if (S.code) { const p = (d.people || []).find((x) => x.hash === S.code.hash); if (p && p.code) S.code.code = p.code; }
+    if (S.code) { const p = byHash(S.code.hash); if (p && p.code) S.code.code = p.code; }
+    renderYou();
     renderPeople();
   }
 
-  // --- action wrapper ---
   async function act(action, extra, okMsg, quiet) {
     if (S.busy) return;
     S.busy = true; $("msg").classList.remove("err");
@@ -408,7 +497,6 @@ button.sm{padding:8px 14px;font-size:14px}
     } finally { S.busy = false; }
   }
 
-  // --- auth / boot ---
   function showDash() { $("login").classList.add("hide"); $("dash").classList.remove("hide"); $("logout").classList.remove("hide"); }
   function logout() { PW = ""; try { sessionStorage.removeItem("tb-pw"); } catch {} $("dash").classList.add("hide"); $("login").classList.remove("hide"); $("logout").classList.add("hide"); $("pw").focus(); }
 
@@ -436,11 +524,8 @@ button.sm{padding:8px 14px;font-size:14px}
   function exportCSV() {
     if (!S.data || !S.data.people.length) { toast("Nothing to export"); return; }
     const head = ["Name", "Access", "Expires", "Today", "Week", "Month", "Days active", "Avg score", "Best score", "Last used", "App", "Added", "Note", "Code"];
-    const rows = S.data.people.map((p) => [
-      p.name, p.active ? (p.live ? "on" : "expired") : "off", p.expires ? toYMD(p.expires) : "",
-      p.today, p.week, p.month, p.days, p.avg ?? "", p.best ?? "",
-      p.last ? new Date(p.last).toISOString() : "", p.version ?? "", toYMD(p.added), p.note ?? "", p.code ?? "",
-    ]);
+    const rows = S.data.people.map((p) => [p.name, p.active ? (p.live ? "on" : "expired") : "off", p.expires ? toYMD(p.expires) : "",
+      p.today, p.week, p.month, p.days, p.avg ?? "", p.best ?? "", p.last ? new Date(p.last).toISOString() : "", p.version ?? "", toYMD(p.added), p.note ?? "", p.code ?? ""]);
     const csv = [head, ...rows].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\r\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
@@ -451,13 +536,10 @@ button.sm{padding:8px 14px;font-size:14px}
 
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.open && !S.editing) { S.open = null; renderPeople(); } });
 
-  // auto-login if remembered
   if (PW) apiCall("list").then((d) => { render(d); showDash(); }).catch(logout);
-  // poll (pause while editing, busy, or page hidden)
   setInterval(() => { if (PW && !document.hidden && !S.editing && !S.busy && !$("dash").classList.contains("hide")) apiCall("list").then(render).catch(() => {}); }, 30000);
 
-  // test seam
-  window.__TB = { setMock(fn) { apiCall = fn; }, render, showDash, state: S, boot: (d) => { render(d); showDash(); } };
+  window.__TB = { setMock(fn) { apiCall = fn; }, render, showDash, state: S, boot: (d) => { render(d); showDash(); }, setMe };
 })();
 </script>
 </body>
