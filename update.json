@@ -1,7 +1,7 @@
 {
-  "version": "1.0.11",
+  "version": "1.0.12",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "343064e3408f73f071ec4ed922132900bd2e08f8f8340907acbe61f145bf5637",
-  "sig": "EDFqtcK7OYr+NVn+iP0UpzgvcmjXvctTgm/hgZH/PrWzuKsSWFxXlS8krOTF4c3L00DzpMolA+j+Uqs7VcyDDw==",
-  "notes": "Copy/paste now works in the access-key field."
+  "sha256": "cef612a120da1501eba2a07c60c4567e917d9b1bc74d8816c961c295f728bb4a",
+  "sig": "bmCfO51mznz6i03yYxp6QJEFLwbjTtYDJANpPuttMK1J9tLLhsSWM7QvIxVA4GHT0IFfw5f4RDJ4++wIBgJkAQ==",
+  "notes": "Hackathon mode: stronger word choice + faster human pacing to hit the target, off-center swipes, occasional slip-and-correct, custom target, diagnostics."
 }
