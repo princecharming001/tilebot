@@ -1,7 +1,7 @@
 {
-  "version": "1.0.7",
+  "version": "1.0.8",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "da585e42d98777c2f52e1ef9baf12205719a91e3317df56cbd0eaeda3653d321",
-  "sig": "4WkANG0+KkCrlzunTE61RBFFuCBxvIYQ7O80hhB0ySh/2IIbH0PpJxGSj8+suHy/spLxcTRvqste40uYaZWADw==",
-  "notes": "Signed & notarized \u2014 updates no longer re-ask for permissions."
+  "sha256": "bfb180c934c42addc91e7feed7b6265d7e3a07af16edee5ef15498f6e0035123",
+  "sig": "vlZnTMOADofe+7yUCZS2s9pMXbLoqhOKbkh4jHIh3unzBk8cCBaG4H7f0e+LA/AUhL/2ecxtkDxWuxu0g32gBQ==",
+  "notes": "New menu-bar panel, live access status, and a Hackathon mode toggle (human-like play)."
 }
