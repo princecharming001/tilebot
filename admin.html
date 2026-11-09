@@ -69,6 +69,7 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
 .chip.now{background:var(--ink);color:#fff}
 .chip.now::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#6cf09a;margin-right:6px;animation:pulse 1.2s ease-in-out infinite}
 .chip.exp,.chip.cap{background:var(--red-soft);color:var(--red)}
+.chip.free{background:#f3ecdf;color:#8a6d3b}
 .pc-code{display:flex;align-items:center;gap:9px;margin:11px 0 10px}
 .pc-code .code{font:700 15px/1 var(--mono);letter-spacing:.04em;background:var(--bg);border:1px dashed var(--line);border-radius:7px;padding:8px 11px}
 .pc-code .sep{flex:1}
@@ -134,6 +135,14 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
       </div>
     </div>
 
+    <div class="bar">
+      <div class="master">Require subscription
+        <button id="billing" class="sw" role="switch" aria-checked="false" aria-label="Require a paid subscription" type="button"></button>
+      </div>
+      <div class="sep"></div>
+      <div class="cap" id="billingNote">Off — anyone with a code can play</div>
+    </div>
+
     <div id="codePanel" class="codepanel hide"></div>
     <form class="add" id="addForm">
       <input id="who" placeholder="Add a player by name" autocomplete="off" maxlength="40">
@@ -195,6 +204,16 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     if (live(p)) return '<span class="chip now">Playing now</span>';
     return '<span class="chip on">Active</span>';
   }
+  // Subscription / payment state. Exempt people never need to pay.
+  function subChip(p) {
+    if (p.exempt) return '<span class="chip free">Free</span>';
+    const s = p.sub;
+    if (s === "active" || s === "trialing") return `<span class="chip on">Subscribed${s === "trialing" ? " (trial)" : ""}</span>`;
+    if (s === "past_due" || s === "unpaid") return '<span class="chip cap">Payment failed</span>';
+    if (s === "canceled") return '<span class="chip cap">Cancelled</span>';
+    if (S.data && S.data.billingLive) return '<span class="chip cap">No subscription</span>';
+    return ""; // billing off & never subscribed: nothing to show
+  }
 
   /* ---- person cards ---- */
   function renderPeople() {
@@ -215,7 +234,7 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     return `
     <div class="pc ${p.active ? "" : "dim"}" data-hash="${p.hash}">
       <div class="pc-top">
-        <div class="pc-name">${esc(p.name)} ${statusChip(p)}</div>
+        <div class="pc-name">${esc(p.name)} ${statusChip(p)} ${subChip(p)}</div>
         <button class="sw sm" role="switch" aria-checked="${p.active}" data-act="access" title="Access on/off"></button>
       </div>
       <div class="pc-code">${codeLine}<span class="sep"></span><button class="ic" data-act="manage">${open ? "Close" : "Manage"}</button></div>
@@ -241,6 +260,10 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
         </div>
         <div class="f"><label>Access expires</label><input type="date" data-f="expires" value="${toYMD(p.expires)}"></div>
       </div>
+      <div class="f" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <label style="margin:0">Free access — no subscription needed</label>
+        <button class="sw sm" role="switch" aria-checked="${p.exempt}" data-f="exempt" type="button" aria-label="Exempt from payment"></button>
+      </div>
       <div class="acts">
         <button class="sm" data-act="save">Save</button>
         ${p.code ? '<button class="ghost sm" data-act="newcode">New code</button>' : ""}
@@ -258,14 +281,17 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     const man = el.querySelector(".manage"); if (!man) return;
     const modeSel = man.querySelector('[data-f="mode"]'), numEl = man.querySelector('[data-f="num"]');
     modeSel.onchange = () => { numEl.classList.toggle("hide", modeSel.value !== "custom"); if (modeSel.value === "custom") numEl.focus(); };
+    const exEl = man.querySelector('[data-f="exempt"]');
+    exEl.onclick = () => exEl.setAttribute("aria-checked", exEl.getAttribute("aria-checked") === "true" ? "false" : "true");
     man.querySelector('[data-act="save"]').onclick = () => {
       const g = (f) => man.querySelector(`[data-f="${f}"]`).value;
       const name = g("name").trim(); if (!name) { toast("Name can't be empty"); return; }
       let daily_limit = null;
       if (modeSel.value === "none") daily_limit = 0;
       else if (modeSel.value === "custom") { const n = parseInt(numEl.value, 10); if (!(n >= 1)) { toast("Enter games/day or pick No limit"); return; } daily_limit = n; }
+      const exempt = exEl.getAttribute("aria-checked") === "true";
       S.editing = false; S.open.delete(p.hash);
-      act("update", { hash: p.hash, name, expires: g("expires") || "", daily_limit }, "Saved");
+      act("update", { hash: p.hash, name, expires: g("expires") || "", daily_limit, exempt }, "Saved");
     };
     const nc = man.querySelector('[data-act="newcode"]'); if (nc) nc.onclick = () => { if (confirm(`Replace ${p.name}'s code? The old one stops working.`)) genCode(p); };
     man.querySelector('[data-act="remove"]').onclick = () => { if (confirm(`Remove ${p.name}? Deletes their access and usage. Can't be undone.`)) act("remove", { hash: p.hash }, `${p.name} removed`).then(() => S.open.delete(p.hash)); };
@@ -294,6 +320,9 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     $("offBar").classList.toggle("hide", d.enabled);
     const def = d.defaultDaily ?? 10; $("defVal").textContent = def === 0 ? "none" : def;
     const s = d.summary || {};
+    const bl = !!d.billingLive;
+    $("billing").setAttribute("aria-checked", String(bl));
+    $("billingNote").innerHTML = bl ? `$25/day · <b>${s.subscribers ?? 0}</b> subscribed` : "Off — anyone with a code can play";
     $("sumLeft").textContent = `${plural(s.people ?? 0, "player")}`;
     $("sumRight").innerHTML = `${s.playingNow ? '<span class="dot"></span>' + s.playingNow + " playing now · " : ""}${s.gamesToday ?? 0} games today · ${plural(s.gamesWeek ?? 0, "game")} this week`;
     if (S.code) { const p = (d.people || []).find((x) => x.name === S.code.name); if (p && p.code) S.code.code = p.code; }
@@ -317,6 +346,11 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
   };
   $("logout").onclick = logout;
   $("global").onclick = () => { const on = $("global").getAttribute("aria-checked") !== "true"; act("enabled", { on }, on ? "Tilebot is on" : "Tilebot is off for everyone"); };
+  $("billing").onclick = () => {
+    const on = $("billing").getAttribute("aria-checked") !== "true";
+    if (on && !confirm("Require a paid subscription?\n\nEveryone without an active subscription loses access — except people marked “Free”. Your Admin code is already Free.")) return;
+    act("billing", { on }, on ? "Subscription required — $25/day" : "Subscription no longer required");
+  };
   const setDefault = (n) => { n = Math.max(0, Math.min(999, Math.trunc(n))); act("default", { limit: n }, n === 0 ? "No daily limit for anyone" : `Default cap ${n}/day`); };
   $("defMinus").onclick = () => setDefault((parseInt($("defVal").textContent, 10) || 0) - 1);
   $("defPlus").onclick = () => setDefault((parseInt($("defVal").textContent, 10) || 0) + 1);

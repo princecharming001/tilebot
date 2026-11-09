@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f6f2f2">
+<title>Welcome to Tilebot</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0a'/%3E%3Crect x='7' y='7' width='8' height='8' rx='1.5' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='1.5' fill='%23fff' opacity='.4'/%3E%3Crect x='7' y='17' width='8' height='8' rx='1.5' fill='%23fff' opacity='.4'/%3E%3Crect x='17' y='17' width='8' height='8' rx='1.5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f2f2;--ink:#0a0a0a;--mute:#8a8a90;--line:#e2dcdc;--card:#fff;--green:#1f9d55;
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;--serif:"Instrument Serif","Times New Roman",serif;--mono:"Space Mono",ui-monospace,Menlo,monospace;
+  --shadow:0 1px 0 rgba(0,0,0,.02),0 16px 40px -30px rgba(60,40,40,.45)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;letter-spacing:-0.01em;min-height:100vh;display:grid;place-items:center;padding:28px 16px}
+.wrap{width:100%;max-width:440px}
+.brand{display:flex;align-items:center;gap:11px;justify-content:center;margin-bottom:26px}
+.brand svg{width:26px;height:26px;fill:var(--ink)}
+.brand .wm{font-family:var(--serif);font-size:27px;line-height:1}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:30px 26px;text-align:center}
+h1{font-family:var(--serif);font-weight:400;font-size:40px;line-height:1.02;letter-spacing:-0.03em;margin:0 0 8px}
+.sub{color:var(--mute);margin:0 0 22px}
+.codebox{border:1px dashed var(--line);border-radius:12px;background:var(--bg);padding:18px;margin:0 0 16px}
+.codebox .lab{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--mute);margin-bottom:9px}
+.code{font:700 34px/1 var(--mono);letter-spacing:.06em}
+button{font:inherit;letter-spacing:-0.01em;border:0;border-radius:9px;padding:13px 18px;background:var(--ink);color:#fff;cursor:pointer;width:100%;transition:opacity .2s}
+button:hover{opacity:.88}button:active{transform:translateY(1px)}
+.steps{text-align:left;margin:22px 2px 0;padding:0;list-style:none;counter-reset:s}
+.steps li{position:relative;padding:0 0 14px 34px;color:#444;font-size:15px}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-1px;width:23px;height:23px;border-radius:50%;background:var(--ink);color:#fff;font:600 12px/23px var(--sans);text-align:center}
+.spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--ink);margin:14px auto;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.muted{color:var(--mute);font-size:14px;margin-top:14px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(18px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:7px;font-size:14px;opacity:0;pointer-events:none;transition:all .2s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hide{display:none!important}
+a{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="1.6"/><rect x="13" y="2" width="9" height="9" rx="1.6" opacity=".35"/><rect x="2" y="13" width="9" height="9" rx="1.6" opacity=".35"/><rect x="13" y="13" width="9" height="9" rx="1.6"/></svg>
+    <span class="wm">Tilebot</span>
+  </div>
+
+  <div class="card">
+    <!-- waiting -->
+    <div id="wait">
+      <h1>You’re in.</h1>
+      <p class="sub">Setting up your access code…</p>
+      <div class="spin"></div>
+      <p class="muted">This takes a few seconds after payment.</p>
+    </div>
+
+    <!-- ready -->
+    <div id="ready" class="hide">
+      <h1>Welcome to Tilebot</h1>
+      <p class="sub">Your subscription is active. Here’s your access code.</p>
+      <div class="codebox">
+        <div class="lab">Your access code</div>
+        <div class="code" id="code">····-····</div>
+      </div>
+      <button id="copyBtn" type="button">Copy code</button>
+      <ol class="steps">
+        <li>Open Tilebot in your Mac menu bar (the grid icon).</li>
+        <li>Click <b>Enter access key</b> and paste this code.</li>
+        <li>You’re set. Manage or cancel anytime from <b>Billing</b> in the same menu.</li>
+      </ol>
+      <p class="muted">Billed $25/day. Cancelling ends your Tilebot access.</p>
+    </div>
+
+    <!-- error -->
+    <div id="err" class="hide">
+      <h1>Almost there</h1>
+      <p class="sub">We couldn’t load your code automatically. Your payment went through — if the code doesn’t appear, contact the person who shared Tilebot with you.</p>
+      <button id="retryBtn" type="button">Try again</button>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+(() => {
+  "use strict";
+  const API = "https://nxibeiykcgxpbmkeadth.supabase.co/functions/v1/tilebot";
+  const $ = (id) => document.getElementById(id);
+  const session = new URLSearchParams(location.search).get("session");
+  let tries = 0, code = null;
+
+  function show(which) { for (const id of ["wait", "ready", "err"]) $(id).classList.toggle("hide", id !== which); }
+  let toastT; function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 1600); }
+  async function copy(text) {
+    let ok = false; try { await navigator.clipboard.writeText(text); ok = true; } catch {}
+    if (!ok) { try { const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.focus(); ta.select(); ok = document.execCommand("copy"); ta.remove(); } catch {} }
+    toast(ok ? "Code copied" : "Press ⌘/Ctrl+C");
+  }
+
+  async function poll() {
+    if (!session) { show("err"); return; }
+    try {
+      const r = await fetch(`${API}?welcome=${encodeURIComponent(session)}`, { cache: "no-store" });
+      const j = await r.json();
+      if (j.code) { code = j.code; $("code").textContent = code; show("ready"); return; }
+    } catch {}
+    if (++tries > 20) { show("err"); return; }   // ~60s
+    setTimeout(poll, 3000);
+  }
+
+  $("copyBtn").onclick = () => code && copy(code);
+  $("retryBtn").onclick = () => { tries = 0; show("wait"); poll(); };
+  show(session ? "wait" : "err");
+  if (session) poll();
+})();
+</script>
+</body>
+</html>

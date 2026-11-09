@@ -1,7 +1,7 @@
 {
-  "version": "1.0.12",
+  "version": "1.0.13",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "cef612a120da1501eba2a07c60c4567e917d9b1bc74d8816c961c295f728bb4a",
-  "sig": "bmCfO51mznz6i03yYxp6QJEFLwbjTtYDJANpPuttMK1J9tLLhsSWM7QvIxVA4GHT0IFfw5f4RDJ4++wIBgJkAQ==",
-  "notes": "Hackathon mode: stronger word choice + faster human pacing to hit the target, off-center swipes, occasional slip-and-correct, custom target, diagnostics."
+  "sha256": "8d0378a334a69ac895d2287a3c47051c0ab874a388a8fbd8ab7589991469388e",
+  "sig": "tmS9TNzSHtEp81vBZQRikwYLCFproq0t0/PvYaReRm7DqutQwXJtofsyECOKWukyCSSemxNVNKc5r2rmx4s6Bg==",
+  "notes": "Billing: subscribe and manage your plan right from the menu."
 }
