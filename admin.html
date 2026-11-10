@@ -87,6 +87,16 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
 .manage .f label{display:block;font-size:12px;color:var(--mute);margin:0 0 5px 1px;text-transform:uppercase;letter-spacing:.05em}
 .manage .two{display:flex;gap:9px}.manage .two>div{flex:1}
 .manage .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.pass{border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin:2px 0 6px;background:#fbfafa}
+.pass-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pass-title{font-weight:600;font-size:15px}
+.pass-sub{font-size:12.5px;color:var(--mute)}
+.pass-body{margin-top:13px}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chipbtn{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-size:12.5px;line-height:1;cursor:pointer;width:auto}
+.chipbtn:hover{border-color:var(--ink)}
+.pass-hint{font-size:12.5px;color:var(--mute);margin-top:11px;min-height:1em}
+.chip.pass{background:#f3ecdf;color:#8a6d3b}
 
 /* login */
 .login{max-width:340px;margin:9vh auto 0}
@@ -190,6 +200,16 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
   };
   const fdate = (iso) => iso ? new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "";
   const toYMD = (iso) => { if (!iso) return ""; const d = new Date(iso); return isNaN(d) ? "" : d.toISOString().slice(0, 10); };
+  const toLocalDT = (iso) => { if (!iso) return ""; const d = new Date(iso); if (isNaN(d)) return ""; const z = (x) => String(x).padStart(2, "0"); return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}T${z(d.getHours())}:${z(d.getMinutes())}`; };
+  const fdatetime = (iso) => { if (!iso) return ""; const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); };
+  const passEnded = (p) => p.exempt && ((p.passGames != null && (p.passUsed || 0) >= p.passGames) || (p.expires && Date.parse(p.expires) < Date.now()));
+  function passHint(p) {
+    const bits = [];
+    if (p.passGames != null) bits.push(`${p.passUsed || 0} of ${p.passGames} games used`);
+    if (p.expires) bits.push(`${Date.parse(p.expires) < Date.now() ? "ended" : "ends"} ${fdatetime(p.expires)}`);
+    if (!bits.length) return "Unlimited free access while this is on.";
+    return bits.join(" · ") + (passEnded(p) ? " — pass used up." : ".");
+  }
   const live = (p) => p.last && Date.now() - Date.parse(p.last) < 15 * 60e3;
   let toastT; function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 1600); }
   async function copy(text, label) {
@@ -208,7 +228,11 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
   }
   // Subscription / payment state. Exempt people never need to pay.
   function subChip(p) {
-    if (p.exempt) return '<span class="chip free">Free</span>';
+    if (p.exempt) {
+      if (passEnded(p)) return '<span class="chip cap">Pass used up</span>';
+      if (p.passGames != null || p.expires) return '<span class="chip pass">Pass</span>';
+      return '<span class="chip free">Free</span>';
+    }
     const s = p.sub;
     if (s === "active" || s === "trialing") return `<span class="chip on">Subscribed${s === "trialing" ? " (trial)" : ""}</span>`;
     if (s === "past_due" || s === "unpaid") return '<span class="chip cap">Payment failed</span>';
@@ -230,7 +254,13 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     const refd = p.referredByName ? ` · via ${esc(p.referredByName)}` : "";
     const n = p.referrals || 0;
     const refs = `${n} ${n === 1 ? "referral" : "referrals"}`;
-    if (p.exempt) return `Free${code ? " · " + code : ""} · ${refs}${refd}`;
+    if (p.exempt) {
+      const lim = [];
+      if (p.passGames != null) lim.push(`<b>${p.passUsed || 0}/${p.passGames}</b> games`);
+      if (p.expires) lim.push(`until ${fdatetime(p.expires)}`);
+      const label = lim.length ? `Free pass · ${lim.join(" · ")}` : "Free";
+      return `${label}${code ? " · " + code : ""} · ${refs}${refd}`;
+    }
     const price = (S.data && S.data.billingLive) ? `Pays <b>$${p.price}/day</b> · ` : "";
     return `${price}${refs}${code ? " · " + code : ""}${refd}`;
   }
@@ -262,20 +292,34 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     return `
     <div class="manage">
       <div class="f"><label>Name</label><input data-f="name" value="${esc(p.name)}" maxlength="40"></div>
-      <div class="two">
-        <div class="f"><label>Daily cap</label>
-          <select data-f="mode">
-            <option value="default"${mode === "default" ? " selected" : ""}>Default (${def}/day)</option>
-            <option value="none"${mode === "none" ? " selected" : ""}>No limit</option>
-            <option value="custom"${mode === "custom" ? " selected" : ""}>Custom…</option>
-          </select>
-          <input type="number" min="1" data-f="num" class="${mode === "custom" ? "" : "hide"}" style="margin-top:8px" placeholder="games/day" value="${mode === "custom" ? p.dailyLimit : ""}">
-        </div>
-        <div class="f"><label>Access expires</label><input type="date" data-f="expires" value="${toYMD(p.expires)}"></div>
+      <div class="f"><label>Daily cap</label>
+        <select data-f="mode">
+          <option value="default"${mode === "default" ? " selected" : ""}>Default (${def}/day)</option>
+          <option value="none"${mode === "none" ? " selected" : ""}>No limit</option>
+          <option value="custom"${mode === "custom" ? " selected" : ""}>Custom…</option>
+        </select>
+        <input type="number" min="1" data-f="num" class="${mode === "custom" ? "" : "hide"}" style="margin-top:8px" placeholder="games/day" value="${mode === "custom" ? p.dailyLimit : ""}">
       </div>
-      <div class="f" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-        <label style="margin:0">Free access — no subscription needed</label>
-        <button class="sw sm" role="switch" aria-checked="${p.exempt}" data-f="exempt" type="button" aria-label="Exempt from payment"></button>
+      <div class="pass">
+        <div class="pass-head">
+          <div><div class="pass-title">Free pass</div><div class="pass-sub">Play free — skip payment</div></div>
+          <button class="sw sm" role="switch" aria-checked="${p.exempt}" data-f="exempt" type="button" aria-label="Free pass"></button>
+        </div>
+        <div class="pass-body ${p.exempt ? "" : "hide"}" data-passbody>
+          <div class="two">
+            <div class="f"><label>Until (optional)</label><input type="datetime-local" data-f="until" value="${toLocalDT(p.expires)}"></div>
+            <div class="f"><label>Games total (optional)</label><input type="number" min="1" data-f="passgames" placeholder="unlimited" value="${p.passGames ?? ""}"></div>
+          </div>
+          <div class="quick">
+            <button class="chipbtn" type="button" data-dur="1">+1 day</button>
+            <button class="chipbtn" type="button" data-dur="3">+3 days</button>
+            <button class="chipbtn" type="button" data-dur="7">+1 week</button>
+            <button class="chipbtn" type="button" data-g="5">5 games</button>
+            <button class="chipbtn" type="button" data-g="10">10 games</button>
+            <button class="chipbtn" type="button" data-clear>No limits</button>
+          </div>
+          <div class="pass-hint" data-passhint>${passHint(p)}</div>
+        </div>
       </div>
       <div class="acts">
         <button class="sm" data-act="save">Save</button>
@@ -296,7 +340,18 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
     const modeSel = man.querySelector('[data-f="mode"]'), numEl = man.querySelector('[data-f="num"]');
     modeSel.onchange = () => { numEl.classList.toggle("hide", modeSel.value !== "custom"); if (modeSel.value === "custom") numEl.focus(); };
     const exEl = man.querySelector('[data-f="exempt"]');
-    exEl.onclick = () => exEl.setAttribute("aria-checked", exEl.getAttribute("aria-checked") === "true" ? "false" : "true");
+    const passBody = man.querySelector('[data-passbody]');
+    exEl.onclick = () => {
+      const on = exEl.getAttribute("aria-checked") !== "true";
+      exEl.setAttribute("aria-checked", String(on));
+      if (passBody) passBody.classList.toggle("hide", !on);
+    };
+    man.querySelectorAll(".chipbtn").forEach((b) => b.onclick = () => {
+      const until = man.querySelector('[data-f="until"]'), pg = man.querySelector('[data-f="passgames"]');
+      if (b.dataset.dur) until.value = toLocalDT(new Date(Date.now() + parseInt(b.dataset.dur, 10) * 864e5).toISOString());
+      else if (b.dataset.g) pg.value = b.dataset.g;
+      else { until.value = ""; pg.value = ""; }
+    });
     const sl = man.querySelector('[data-act="sharelink"]'); if (sl) sl.onclick = () => copy(p.share, `Copied ${p.name}'s share link`);
     man.querySelector('[data-act="save"]').onclick = () => {
       const g = (f) => man.querySelector(`[data-f="${f}"]`).value;
@@ -305,8 +360,10 @@ select{cursor:pointer;-webkit-appearance:none;appearance:none}
       if (modeSel.value === "none") daily_limit = 0;
       else if (modeSel.value === "custom") { const n = parseInt(numEl.value, 10); if (!(n >= 1)) { toast("Enter games/day or pick No limit"); return; } daily_limit = n; }
       const exempt = exEl.getAttribute("aria-checked") === "true";
+      const pgRaw = g("passgames").trim();
+      const pass_games = pgRaw === "" ? null : Math.max(1, parseInt(pgRaw, 10) || 1);
       S.editing = false; S.open.delete(p.hash);
-      act("update", { hash: p.hash, name, expires: g("expires") || "", daily_limit, exempt }, "Saved");
+      act("update", { hash: p.hash, name, expires: g("until") || "", daily_limit, exempt, pass_games }, "Saved");
     };
     const nc = man.querySelector('[data-act="newcode"]'); if (nc) nc.onclick = () => { if (confirm(`Replace ${p.name}'s code? The old one stops working.`)) genCode(p); };
     man.querySelector('[data-act="remove"]').onclick = () => { if (confirm(`Remove ${p.name}? Deletes their access and usage. Can't be undone.`)) act("remove", { hash: p.hash }, `${p.name} removed`).then(() => S.open.delete(p.hash)); };
