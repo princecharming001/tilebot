@@ -1,7 +1,7 @@
 {
-  "version": "1.0.14",
+  "version": "1.0.15",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "617c04801f66e408057a94f3c227406c68d072edbd3693cce31f2a4937bb5aa6",
-  "sig": "poDHXGJbpw7TtfrkiFW+6Waf/gqC5nSBH7cPBkf11ttbRzldaUYcursF+bqb5a+Q2un7gMP54ydUBsOctKsCBA==",
-  "notes": "Referrals: share Tilebot and pay $1/day less for every friend who joins (down to $5/day)."
+  "sha256": "0d50f3901763acf95855731b69e2a75548d7576ecef02ea1b5d2ad383ab68e22",
+  "sig": "2APxkf/NZaz9Ul8jP1iXe/XIt9JEnJdY4PIqA1Hjsp2mDicWz6j875WAO8fIqYAIC+NSIJfryNBSMlIIVXS9Cg==",
+  "notes": "Hackathon mode: reads the real on-screen score and paces to your target across the round."
 }
