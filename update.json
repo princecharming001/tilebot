@@ -1,7 +1,7 @@
 {
-  "version": "1.0.17",
+  "version": "1.0.18",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "6844fb444c95c91a33dcbd39a92aaf4f8f995072c14ac7e9537f5764cc05c257",
-  "sig": "+yRRnaSTwGMatCUZQ0ut6L5h/KodN7/7ApkZhx7nGg2HaLLtYBHXBGpPIPS3ZjTmPXspLjfdrvK2JBcsOD1ACg==",
-  "notes": "Hackathon mode now paces to the full 2:30 and drives toward your score cap. Plus on-device round recording to keep improving it."
+  "sha256": "655c8d7ce9bc2e2dde53b625d335e81b7b8371af7e7b40fa1e87b3526c5127ca",
+  "sig": "t9JrO8D/KHRiEgGbgUFOgS2VFpCcP7b6adqHcdruyNGFTkfYr1hn5HP+lr4N2ldIjsNCniUaAN4hGYchP4kaBg==",
+  "notes": "Hackathon mode now holds to the full 2:30 and drives to your real score cap (no more early stops or over-pausing from a stray score read). On-device round recording continues."
 }
