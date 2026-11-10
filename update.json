@@ -1,7 +1,7 @@
 {
-  "version": "1.0.18",
+  "version": "1.0.19",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "655c8d7ce9bc2e2dde53b625d335e81b7b8371af7e7b40fa1e87b3526c5127ca",
-  "sig": "t9JrO8D/KHRiEgGbgUFOgS2VFpCcP7b6adqHcdruyNGFTkfYr1hn5HP+lr4N2ldIjsNCniUaAN4hGYchP4kaBg==",
-  "notes": "Hackathon mode now holds to the full 2:30 and drives to your real score cap (no more early stops or over-pausing from a stray score read). On-device round recording continues."
+  "sha256": "e5e6b1a7894a582cd6216b09bd6b388d27701b5c9fef566ece5a8457d2578056",
+  "sig": "O4EX1x65ba3TC+l5Xb8rvWtd0XPmZSSmHFVizu3GMaWwrVAKHUS1FX0zZ4rGbOyf0PuU3ZbmSwEruatEN4iYAw==",
+  "notes": "Tilebot now records every round you play (not just hackathon) as local training data, and hackathon timing is sampled from a tunable human-cadence profile instead of a rigid pacer \u2014 so it keeps getting more natural as it learns."
 }
