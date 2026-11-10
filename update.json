@@ -1,7 +1,7 @@
 {
-  "version": "1.0.16",
+  "version": "1.0.17",
   "url": "https://princecharming001.github.io/tilebot/Tilebot.zip",
-  "sha256": "713a47b53467c177cc6f744c01dd49317af318964b9dd0f88b429dc751a75ef1",
-  "sig": "PafCsdH4xZZsrrvoVePUtUfezBjblEeIFohhM6kvJ19gciAxBCTdVDsWE1CT7fD11zinzLs78Jm1LWnKGpp9DQ==",
-  "notes": "Tilebot now shows in the Dock. Plus the hackathon real-score tracker."
+  "sha256": "6844fb444c95c91a33dcbd39a92aaf4f8f995072c14ac7e9537f5764cc05c257",
+  "sig": "+yRRnaSTwGMatCUZQ0ut6L5h/KodN7/7ApkZhx7nGg2HaLLtYBHXBGpPIPS3ZjTmPXspLjfdrvK2JBcsOD1ACg==",
+  "notes": "Hackathon mode now paces to the full 2:30 and drives toward your score cap. Plus on-device round recording to keep improving it."
 }
